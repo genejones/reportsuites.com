@@ -1,0 +1,164 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://chione.genejon.es/favicon.ico">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://chione.genejon.es/assets/apple-touch-icon-144x144.png" />
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://chione.genejon.es/assets/apple-touch-icon-152x152.png" />
+	<link rel="icon" type="image/png" href="https://chione.genejon.es/assets/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="https://chione.genejon.es/assets/favicon-16x16.png" sizes="16x16" />
+
+    <title>Adobe Configuration Export</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Allerta" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="custom.css" rel="stylesheet">
+	<!-- Google Tag Manager -->
+	<script>
+	dataLayer = window.dataLayer = window.dataLayer || [];
+	//dataLayer.push();
+	(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-NG5QWXV');</script>
+	<!-- End Google Tag Manager -->
+  </head>
+
+  <body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NG5QWXV"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+    <div class="container">
+      <div class="header clearfix">
+        <h1 class="text-muted">Adobe Configuration Export</h1>
+      </div>
+
+          <div class="jumbotron">
+            <p class="strong">Lost in your eVars?</h1>
+			<h3 class="display-3">Find all your configuration details easily</h3>
+            <p class="lead">Your <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Adobe credentials</a> are not stored. No changes to your Adobe Analytics account will be enacted by this code.</p>
+            <form id="adobe-action">
+                <div class="form-group row">
+                    <label for="adobe-username" class="col-form-label">Adobe Analytics Username</label>
+                    <input class="form-control" type="text" placeholder="Enter username" id="adobe-username">
+                    <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                </div>
+                <div class="form-group row">
+                  <label for="adobe-secret" class="col-form-label">Adobe Analytics Secret</label>
+                  <input class="form-control" type="text" placeholder="Insert your secret" id="adobe-secret">
+                  <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                </div>
+                <div class="form-group row">
+                  <label for="filename" class="col-form-label">Filename</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" value="analytics-config" id="filename">
+                    <div class="input-group-addon">.xlsx</div>
+                  </div>
+                  <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                </div>
+                <button id="action-initial" type="button" class="btn btn-lg btn-success" href="#" role="button">Let's do this!</a>
+            </form>
+          </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Easy</h4>
+          <p>View all your configuration options in Excel quickly across several report suites.</p>
+
+          <h4>Secure</h4>
+          <p>All requests take place in your browser. I never have access to your Adobe credentials.</p>
+
+        </div>
+
+        <div class="col-lg-6">
+          <h4>Community</h4>
+          <p><a href="#" data-toggle="modal" data-target="#information-collected">Basic stats</a> about your report suite will be used to create community utilization reports.</p>
+
+          <h4>Premium Upgrades</h4>
+          <p>A premier option, coming soon, will let you schedule monthly pulls of your config.</p>
+
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>© Gene Jones 2017. CSS by Bootstrap, with patterning by <a href="http://www.heropatterns.com/">Steve Schoger/Hero Patterns</a></p>
+      </footer>
+
+    </div> <!-- /container -->
+	
+	<div class="modal fade" tabindex="-1" role="dialog" id="information-collected">
+		<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">Information Collected</h4>
+		  </div>
+		  <div class="modal-body">
+		    <h3>I collect the following information in order to create whitepapers for the education of the analytics community.</h3>
+			<p>You also consent to me submitting a portion of the data which I will obtain from Adobe on your behalf.
+			When information is hashed, it will be done with the PBKDF2 algorithm (the same algorithm recommended and used to protect passwords), using a salt and 5000 iterations.
+			This hashing system will protect your identifying details for decades to come.
+			I will collect the following information:</p>
+			<ul>
+				<li>The hash of the filename you used.</li>
+				<li>A hash of the organization name. This is used to identify usage by names. <span class="small">The name of your organization may also be directly captured. </span></li>
+				<li>A hash of your user name. <span class="small">Your username is not captured directly.</span></li>
+				<li>The total number of report suites in your organization. <span class="small">The titles and rsids of these reportsuites are not captured.</span></li>
+				<li>For each report suite you select to include in the report, I also collect the following:</li>
+				<ul>
+					<li>How many eVars, props, and events are enabled.</li>
+					<li>How many eVars, props, and events have descriptions.</li>
+					<li>How many eVars, props, and events have names.</li>
+					<li>How many eVars, props, and events have names but which are not enabled.</li>
+					<li>The numbers of enabled eVars, props, and events.</li>
+					<li>The slot numbers (e.g. eVar2, prop4) of configured eVars, props, and events.</li>
+				</ul>
+			</ul>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  </div>
+		</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+    <!-- JavaScript-->
+    <script src="assets/js/essentials.js"></script>
+	<script src="assets/js/jszip.min.js"></script>
+	<script src="assets/js/xmlbuilder.js"></script>
+	<script src="assets/js/msexcel-builder.js"></script>
+    <script src="adobe-export.js"></script>
+	
+	<div class="modal fade" tabindex="-1" role="dialog" id="adobe-instructions-modal">
+		<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h4 class="modal-title">How to Obtain your Adobe Credentials</h4>
+		  </div>
+		  <div class="modal-body">
+			<span id="cred-instructions-0" data-current-instruction="true" data-next-step="cred-instructions-1"><h5>Find your user profile on the top menu</h5><img class="img-responsive img-thumbnail" src="/assets/get-credentials-step-1-0.jpg" /></span>
+			<span id="cred-instructions-1" data-prev-step="cred-instructions-0" data-next-step="cred-instructions-2" class="collapse"><h5>Click "Edit your profile"</h5><img class="img-responsive img-thumbnail" src="/assets/get-credentials-step-1-1.jpg" /></span>
+			<span id="cred-instructions-2" data-prev-step="cred-instructions-1" class="collapse"><h5>Scroll to "Web Service". Your credentials are located here. Keep them secret and safe.</h5><img class="img-responsive img-thumbnail" src="/assets/get-credentials-step-2.jpg" /></span>
+		  </div>
+		  <div class="modal-footer">
+			<nav aria-label="...">
+			  <ul class="pager">
+				<li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Previous Step</a></li>
+				<li class="next"><a>Next Step <span aria-hidden="true">&rarr;</span></a></li>
+			  </ul>
+			</nav>
+			<button style="display:none;" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		  </div>
+		</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+</body></html>

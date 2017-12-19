@@ -1,0 +1,35 @@
+{
+  "name": "adobe-api-excel-export",
+  "version": "0.7.4",
+  "description": "Creates an Excel file with all output from Adobe reportsuite configuration options",
+  "main": "adobe-api-client.js",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "browser-request": "^0.3.3",
+    "browserify": "^14.4.0",
+    "file-saver": "^1.3.3",
+    "handlebars": "^4.0.10",
+    "hbsfy": "^2.8.1",
+    "jquery": "^3.2.1",
+    "jszip": "^3.1.3",
+    "keen-tracking": "^1.4.0",
+    "lodash": "^4.17.4",
+    "pbkdf2": "^3.0.14",
+    "wsse": "^2.4.0"
+  },
+  "devDependencies": {
+    "browserify-handlebars": "^1.0.0",
+    "minifyify": "^7.3.5",
+    "uglifyify": "^4.0.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "adobe",
+    "analytics",
+	"excel"
+  ],
+  "author": "Gene Jones",
+  "license": "ISC"
+}

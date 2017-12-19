@@ -1,0 +1,12 @@
+<form id="rsid-selection">
+    {{#each report_suite}}
+    {{log this}}
+    <div class="form-check">
+      <label class="form-check-label">
+        <input class="form-check-input" type="checkbox" name="{{this.rsid}}" id="{{this.rsid}}-checkbox" checked>
+        {{this.rsid}}
+      </label>
+    </div>
+    {{/each}}
+    <button id="rsid-select-action" type="button" class="btn btn-lg btn-success" href="#" role="button">Fetch details</a>
+</form>
