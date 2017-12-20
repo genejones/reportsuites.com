@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en"><head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -43,17 +44,17 @@
           <div class="jumbotron">
             <p class="strong">Lost in your eVars?</h1>
 			<h3 class="display-3">Find all your configuration details easily</h3>
-            <p class="lead">Your <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Adobe credentials</a> are not stored. No changes to your Adobe Analytics account will be enacted by this code.</p>
+            <p class="lead">Your Adobe credentials are not stored. No changes to your Adobe Analytics account will be enacted by this code.</p>
             <form id="adobe-action">
                 <div class="form-group row">
                     <label for="adobe-username" class="col-form-label">Adobe Analytics Username</label>
                     <input class="form-control" type="text" placeholder="Enter username" id="adobe-username">
-                    <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                    <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
                 <div class="form-group row">
                   <label for="adobe-secret" class="col-form-label">Adobe Analytics Secret</label>
                   <input class="form-control" type="text" placeholder="Insert your secret" id="adobe-secret">
-                  <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                  <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
                 <div class="form-group row">
                   <label for="filename" class="col-form-label">Filename</label>
@@ -61,9 +62,9 @@
                     <input class="form-control" type="text" value="analytics-config" id="filename">
                     <div class="input-group-addon">.xlsx</div>
                   </div>
-                  <small class="form-text text-muted">Get this in the settings in your Adobe Analytics account.</small>
+                  <small class="form-text text-muted">Name it something clear and memorable.</small>
                 </div>
-                <button id="action-initial" type="button" class="btn btn-lg btn-success" href="#" role="button">Let's do this!</a>
+                <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#information-collected-warning" role="button">Let's do this!</a>
             </form>
           </div>
 
@@ -93,31 +94,83 @@
 
     </div> <!-- /container -->
 	
-	<div class="modal fade" tabindex="-1" role="dialog" id="information-collected">
+	<div class="modal fade" tabindex="-1" role="dialog" id="information-collected-warning">
 		<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">
 		  <div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Information Collected</h4>
+			<h2 class="modal-title">Information Collected</h2>
 		  </div>
 		  <div class="modal-body">
-		    <h3>I collect the following information in order to create whitepapers for the education of the analytics community.</h3>
-			<p>You also consent to me submitting a portion of the data which I will obtain from Adobe on your behalf.
-			When information is hashed, it will be done with the PBKDF2 algorithm (the same algorithm recommended and used to protect passwords), using a salt and 5000 iterations.
-			This hashing system will protect your identifying details for decades to come.
+			<div class="alert alert-warning" role="alert">
+			  <strong>Warning!</strong> Adobe credentials can be used to read or change anything in Adobe Marketing Suite. Don't give them out willy-nilly.
+			</div>
+			<div class="alert alert-info" role="alert">
+			  <strong>Your analytics are safe.</strong> Your credentials never leave your browser. They are used to create WSSE authorizations.
+			</div>
+			<div class="alert alert-info" role="alert">
+			   Four non-modifying requests will be made to Adobe.
+			   <br><a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getreportsuites-1" class="alert-link">Company.GetReportSuites</a>, <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getprops" class="alert-link">ReportSuite.GetProps, <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getevents" class="alert-link">ReportSuite.GetEvents</strong> and <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getevars-1" class="alert-link">ReportSuite.GetEvars</a>.
+			</div>
+			<div class="alert alert-warning" role="alert">
+				I promise to do nothing nefarious and you can verify that your credentials are safe by looking at outgoing network traffic.
+				<br>If all this makes you nervous, you may want to refresh your Adobe Web credentials after using this service.
+				<br>After refreshing your credentials, your old credentials can no longer be used. This protects your Adobe data.
+			</div>
+		    <h3>I collect the following information</h3>
+			<h6>This information will be used to create whitepapers for the education of the analytics community.</h6>
+			<p>You consent for me to retain a portion of the data which I will obtain from Adobe on your behalf.
+			When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a pepper and 5000 iterations.
+			This level of hashing security is the <a target="_blank" href="https://helpdesk.lastpass.com/account-settings/general/password-iterations-pbkdf2/">same LastPass uses to locally encrypt passwords</a>.
+			This hashing system will protect your identifying details for years to come.
 			I will collect the following information:</p>
 			<ul>
-				<li>The hash of the filename you used.</li>
-				<li>A hash of the organization name. This is used to identify usage by names. <span class="small">The name of your organization may also be directly captured. </span></li>
+				<li>A hash of the filename you used.</li>
+				<li>A hash of the organization name. <span class="small">Your organization name is not captured directly.</span></li>
 				<li>A hash of your user name. <span class="small">Your username is not captured directly.</span></li>
-				<li>The total number of report suites in your organization. <span class="small">The titles and rsids of these reportsuites are not captured.</span></li>
-				<li>For each report suite you select to include in the report, I also collect the following:</li>
+				<li>The total number of report suites in your organization. <span class="small strong">The titles and rsids of these reportsuites are not captured.</span></li>
+				<li>For each report suite you select to include in the report, I may also collect the following:</li>
 				<ul>
 					<li>How many eVars, props, and events are enabled.</li>
 					<li>How many eVars, props, and events have descriptions.</li>
 					<li>How many eVars, props, and events have names.</li>
 					<li>How many eVars, props, and events have names but which are not enabled.</li>
-					<li>The numbers of enabled eVars, props, and events.</li>
+					<li>The slot numbers (e.g. eVar2, prop4) of configured eVars, props, and events.</li>
+				</ul>
+			</ul>
+		  </div>
+		  <div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			<button type="button" id="action-initial" class="btn btn-primary" data-dismiss="modal">I Accept, Continue</button>
+		  </div>
+		</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+	<div class="modal fade" tabindex="-1" role="dialog" id="information-collected">
+		<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			<h2 class="modal-title">FYI, here is all Information Collected</h2>
+			<h3>I collect the following information</h3>
+			<h6>This information will be used to create whitepapers for the education of the analytics community.</h6>
+			<p>You consent for me to retain a portion of the data which I will obtain from Adobe on your behalf.
+			When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a salt and 5000 iterations.
+			This hashing system will protect your identifying details for years to come.
+			<p>Hashing is a one-way process. Once your information has been hashed, nobody will be able to access it.</p>
+			I will collect the following information:</p>
+			<ul>
+				<li>A hash of the filename you used.</li>
+				<li>A hash of the organization name. <span class="small">Your organization name is not captured directly.</span></li>
+				<li>A hash of your user name. <span class="small">Your username is not captured directly.</span></li>
+				<li>The total number of report suites in your organization. <span class="small strong">The titles and rsids of these reportsuites are not captured.</span></li>
+				<li>For each report suite you select to include in the report, I may also collect the following:</li>
+				<ul>
+					<li>How many eVars, props, and events are enabled.</li>
+					<li>How many eVars, props, and events have descriptions.</li>
+					<li>How many eVars, props, and events have names.</li>
+					<li>How many eVars, props, and events have names but which are not enabled.</li>
 					<li>The slot numbers (e.g. eVar2, prop4) of configured eVars, props, and events.</li>
 				</ul>
 			</ul>
@@ -151,8 +204,8 @@
 		  <div class="modal-footer">
 			<nav aria-label="...">
 			  <ul class="pager">
-				<li class="previous disabled"><a><span aria-hidden="true">&larr;</span> Previous Step</a></li>
-				<li class="next"><a>Next Step <span aria-hidden="true">&rarr;</span></a></li>
+				<li class="previous disabled"><a href="#><span aria-hidden="true">&larr;</span> Previous Step</a></li>
+				<li class="next"><a href="#">Next Step <span aria-hidden="true">&rarr;</span></a></li>
 			  </ul>
 			</nav>
 			<button style="display:none;" type="button" class="btn btn-default" data-dismiss="modal">Close</button>

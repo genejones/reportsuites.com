@@ -84,7 +84,7 @@ var displayProgressBar = function(){
 	jQuery('#rsid-selection').remove();
 	jQuery('.display-3').text("Working on it");
     jQuery('.lead').text("Your export is being created");
-	jQuery('.jumbotron').append(progressDisplay({progress:"33", msg:"Fetching eVars"}));
+	jQuery('.jumbotron').append(progressDisplay({progress:"20", msg:"Fetching eVars"}));
 };
 
 var displayProgress = function(progressPct, msg){
@@ -145,12 +145,11 @@ function buf2hex(buffer) { // buffer is an ArrayBuffer
 }
 
 var getHash = function(infoToHash){
-	//uses 3000 iterations, which is weak but we are just using this as a glorified hashing system to provide reassurance
-	//if it was md5 it would be bad because I could trivially reconstruct everything
+	//uses 5000 iterations, which is the same default Lastpass uses
 	//a predetermined salt, and an export length of 30 bytes
-	//use the digest of SAH512
+	//use the digest of SHA256, which is a bit faster than SHA512 and works better in JS
 	
-	let hashBuffer = crypto.pbkdf2Sync(infoToHash, salt, 3000, 32, 'sha512');
+	let hashBuffer = crypto.pbkdf2Sync(infoToHash, salt, 5000, 32, 'sha256');
 	return buf2hex(hashBuffer);
 };
 
@@ -178,6 +177,7 @@ var determineAnalyticsInformation = function(adobeVar){
 };
 
 var getListOfEvars = function(form) {
+	displayProgress(15, "Fetching evars");
 	request({
     headers: getHeaders(),
     uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvars',
@@ -199,7 +199,7 @@ var getListOfEvars = function(form) {
 };
 
 var getListOfProps = function(form) {
-	displayProgress(45, "Fetching props");
+	displayProgress(25, "Fetching props");
 	getNewAuthToken();
 	request({
     headers: getHeaders(),
@@ -235,7 +235,7 @@ var handleExcelSuccess = function(input){
 };
 
 var getListOfEvents = function(form) {
-	displayProgress(66, "Fetching events");
+	displayProgress(40, "Fetching events");
 	request({
     headers: getHeaders(),
     uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvents',
@@ -247,9 +247,10 @@ var getListOfEvents = function(form) {
 		  console.log("succesfully got events");
 		  window.adobe_vars.events = JSON.parse(eventsRaw);
 		  console.log(window.selected_report_suites);
+		  displayProgress(65, "Creating hashes");
           determineAnalyticsInformation(window.adobe_vars);
-		  displayProgress(95, "Building spreadsheet");
-		  excel.exportSiteCatToExcel(window.selected_report_suites, window.adobe_vars.evars, window.adobe_vars.props, window.adobe_vars.events, window.fileName, handleExcelSuccess);
+		  displayProgress(85, "Building spreadsheet");
+		  excel.exportSiteCatToExcel(window.selected_report_suites, window.report_suites, window.adobe_vars.evars, window.adobe_vars.props, window.adobe_vars.events, window.fileName, handleExcelSuccess);
 	  }
 	  else{
 	    console.log(res.statusCode);

@@ -1,9 +1,9 @@
-browserify adobe-api-client -t hbsfy -g [uglifyify -x .js] -o adobe-export.js
+browserify client-handler -t hbsfy -g [uglifyify -x .js] -o adobe-export.js
 
-watchify --debug -t hbsfy -g [uglifyify -x .js] adobe-api-client.js -o adobe-export.js -v
+watchify --debug -t hbsfy -g [uglifyify -x .js] client-handler.js -o adobe-export.js -v
 //debug will add source map, making stuff really huge
 
-watchify -t hbsfy -g [uglifyify -x .js] adobe-api-client.js -o adobe-export.js -v
+watchify -t hbsfy -g [uglifyify -x .js] client-handler.js -o adobe-export.js -v
 
-watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] adobe-api-client.js -o adobe-export.js -v
+watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v
 
