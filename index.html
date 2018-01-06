@@ -49,12 +49,12 @@
                 <div class="form-group row">
                     <label for="adobe-username" class="col-form-label">Adobe Analytics Username</label>
                     <input class="form-control" type="text" placeholder="Enter username" id="adobe-username">
-                    <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
+                    <small class="form-text text-muted"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
                 <div class="form-group row">
                   <label for="adobe-secret" class="col-form-label">Adobe Analytics Secret</label>
                   <input class="form-control" type="text" placeholder="Insert your secret" id="adobe-secret">
-                  <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
+                  <small class="form-text text-muted"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
                 <div class="form-group row">
                   <label for="filename" class="col-form-label">Filename</label>
@@ -62,7 +62,7 @@
                     <input class="form-control" type="text" value="analytics-config" id="filename">
                     <div class="input-group-addon">.xlsx</div>
                   </div>
-                  <small class="form-text text-muted">Name it something clear and memorable.</small>
+                  <small class="form-text text-muted"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Name it something clear and memorable.</small>
                 </div>
                 <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#information-collected-warning" role="button">Let's do this!</a>
             </form>
@@ -156,7 +156,7 @@
 			<h3>I collect the following information</h3>
 			<h6>This information will be used to create whitepapers for the education of the analytics community.</h6>
 			<p>You consent for me to retain a portion of the data which I will obtain from Adobe on your behalf.
-			When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a salt and 5000 iterations.
+			When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a pepper and 5000 iterations.
 			This hashing system will protect your identifying details for years to come.
 			<p>Hashing is a one-way process. Once your information has been hashed, nobody will be able to access it.</p>
 			I will collect the following information:</p>

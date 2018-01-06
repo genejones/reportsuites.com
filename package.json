@@ -1,8 +1,8 @@
 {
-  "name": "adobe-api-excel-export",
-  "version": "0.7.4",
-  "description": "Creates an Excel file with all output from Adobe reportsuite configuration options",
-  "main": "adobe-api-client.js",
+  "name": "reportsuites excel output",
+  "version": "0.7.5",
+  "description": "A website which creates excel files with all Adobe reportsuite configuration options",
+  "main": "client-handler.js",
   "dependencies": {
     "bootstrap": "^3.3.7",
     "browser-request": "^0.3.3",
@@ -24,12 +24,22 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+	"watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
+	"bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v"
   },
   "keywords": [
     "adobe",
     "analytics",
 	"excel"
   ],
-  "author": "Gene Jones",
-  "license": "ISC"
+  "author": {
+	"name" :"Gene Jones",
+	"email": "iam@genejon.es",
+	"url": "genejon.es"
+  },
+  "repository": {
+	"type": "git",
+	"url": "https://github.com/generjones/reportsuites.com.git"
+  },
+  "license": "Apache-2.0"
 }
