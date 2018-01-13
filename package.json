@@ -23,23 +23,23 @@
     "uglifyify": "^4.0.5"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-	"watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
-	"bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
+    "bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v"
   },
   "keywords": [
     "adobe",
     "analytics",
-	"excel"
+    "excel"
   ],
   "author": {
-	"name" :"Gene Jones",
-	"email": "iam@genejon.es",
-	"url": "genejon.es"
+    "name": "Gene Jones",
+    "email": "iam@genejon.es",
+    "url": "genejon.es"
   },
   "repository": {
-	"type": "git",
-	"url": "https://github.com/generjones/reportsuites.com.git"
+    "type": "git",
+    "url": "https://github.com/generjones/reportsuites.com.git"
   },
   "license": "Apache-2.0"
 }

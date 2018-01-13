@@ -209,7 +209,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 		firstRow.push({'value':report_suites[i].rsid, 'style':{font:{bold:'true'}, border:{bottom:'medium'}}});
 	}
 	outputArray.push(firstRow);
-	var allKeys = []; //create a global list of keys for comparision
+	var allKeys = []; //create a global list of keys for comparison
 	for (let i=0; i<report_suites.length; i++){
 		allKeys = union(allKeys, (keys(inputNVP[report_suites[i].rsid])) );
 		console.log(allKeys);
