@@ -1,10 +1,12 @@
 "use strict";
 exports.__esModule = true;
 var $ = require("jquery");
+var jQuery = $;
 var wsse = require('wsse');
 var request = require('browser-request');
 var excel = require('./excel-handler.js');
 var handlebars = require('handlebars/runtime')["default"];
+var Handlebars = handlebars;
 var RSID_selection_template = require('./select_rsid.handlebars');
 var progressDisplay = require('./progress-display.handlebars');
 var crypto = require('pbkdf2');

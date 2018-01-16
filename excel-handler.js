@@ -122,8 +122,16 @@ function setBorder(sheet, style, startLocation, direction){
 			var y = startLocation[1];
 			startLocation = {column:y, row:x};
 		}
-		else{
+		else {
 			throw ("startLocation dimensions are wrong");
+		}
+	}
+	else{
+		if (startLocation.hasOwnProperty(column) && startLocation.hasOwnProperty(row)) {
+			startLocation = {column:y, row:x};
+		}
+		else{
+			throw ("no startLocation present");
 		}
 	}
 	var column = startLocation.column;
@@ -296,8 +304,6 @@ function mapToNameValuePairs(array, nameofVarSlot){
 }
 
 function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray, propArray, eventArray, fileName, callback) {
-	//var workbook = excelbuilder.createWorkbook();
-	//wrokbook.fname = fileName;
 	var workbook = excelbuilder.createWorkbook("./", fileName);
 	console.log("creating a summary/export sheet");
 	let summarySheet = createSummarySheet(workbook, report_suites, allAvailableReportSuites);
@@ -331,4 +337,16 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	});
 }
 
-module.exports.exportSiteCatToExcel = exportSiteCatToExcel;
+module.exports = {
+	exportSiteCatToExcel : exportSiteCatToExcel,
+	_getDimensionsForNewSheet : getDimensionsForNewSheet,
+	_makeNewSheet : getDimensionsForNewSheet,
+	_applyStylesToTheWholeSheet : applyStylesToTheWholeSheet,
+	_setBorder : setBorder,
+	_createSummarySheet : createSummarySheet,
+	_fileSummaryStyling : fileSummaryStyling,
+	_createOverviewOfSlot : createOverviewOfSlot,
+	_generateSummaryForReportSuite : generateSummaryForReportSuite,
+	_mapToNameValuePairs : mapToNameValuePairs,
+	_getSheets: function(){return sheets;}
+};
