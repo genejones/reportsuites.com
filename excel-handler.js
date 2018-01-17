@@ -72,7 +72,7 @@ function fileSummaryStyling(worksheetObj){
 var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook){
 	var outputArray = [];
 	var firstRow = [[]];
-	for (var i=0; i<report_suites.length; i++){
+	for (let i=0; i<report_suites.length; i++){
 		firstRow.push({'value':report_suites[i].rsid, 'style':{font:{bold:'true'}, border:{bottom:'medium'}}});
 	}
 	outputArray.push(firstRow);
@@ -112,15 +112,15 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 	array.push(columns);
 	var allVariables = [props, evars, events];
 	var slotNames = ["props", "evars", "events"];
-	for (var i=0; i<allVariables.length; i++){
+	for (let i=0; i<allVariables.length; i++){
 		var slotName = slotNames[i];
 		var vars = allVariables[i][report_suite];
 		var allKeys = keys(vars);
-		for (var j=0; j<allKeys.length; j++){
+		for (let j=0; j<allKeys.length; j++){
 			var key = allKeys[j];
 			var row = [];
 			var varOfInterest = vars[key];
-			for (var k=0; k<columns.length; k++){
+			for (let k=0; k<columns.length; k++){
 				var column = columns[k];
 				var obj = {};
 				if (column in varOfInterest){
@@ -147,7 +147,7 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 
 function mapToNameValuePairs(array, nameofVarSlot){
 	var rsid_mapping = {};
-	for (var i=0; i<array.length; i++){
+	for (let i=0; i<array.length; i++){
 		var reportSuiteInfo = array[i];
 		var rsid = reportSuiteInfo.rsid;
 		var vars = reportSuiteInfo[nameofVarSlot];
@@ -177,7 +177,7 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	createOverviewOfSlot(report_suites, events, "events", workbook);
 	
 	console.log("creating tabs for each report suite");
-	for (var i=0; i<report_suites.length; i++){
+	for (let i=0; i<report_suites.length; i++){
 		var rs = report_suites[i];
 		generateSummaryForReportSuite(rs.rsid, evars, props, events, workbook);
 	}
@@ -197,7 +197,8 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 }
 
 module.exports = {
-	exportSiteCatToExcel : exportSiteCatToExcel,
+	exportSiteCatToExcel,
+	excelHelpers,
 	_createSummarySheet : createSummarySheet,
 	_fileSummaryStyling : fileSummaryStyling,
 	_createOverviewOfSlot : createOverviewOfSlot,

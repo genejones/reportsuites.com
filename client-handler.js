@@ -13,6 +13,12 @@ window.selected_report_suites = [];
 window.adobe_vars = {};
 var analytics = { 'rs': {} };
 window.analytics = analytics;
+
+var omnibus = window.omnibus || {};
+omnibus.request = request;
+omnibus.excel = excel;
+window.omnibus = omnibus;
+
 var processInitialOptions = function () {
     window.fileName = jQuery('input#filename').val() + '.xlsx';
     window.username = jQuery('input#adobe-username').val();

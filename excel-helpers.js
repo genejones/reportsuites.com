@@ -1,10 +1,12 @@
-var sheets = {};
+"use strict";
+let sheets = {};
 
 function populate_sheet_from_array_of_arrays(sheet, array) {
-	for (var i=0; i<array.length; i++){
+	for (let i=0; i<array.length; i++){
 		var row = array[i];
 		for (var j=0; j<row.length; j++){
 			var cell = row[j];
+			let cellProps = {};
 			cellProps = {
 				'set': cell.value,
 			};
@@ -30,32 +32,41 @@ function populate_sheet_from_array_of_arrays(sheet, array) {
 	return sheet;
 }
 
-function getDimensionsForNewSheet(array){
-	var rows = array.length;
-	var columns = 1;
-	for (var i=0; i<array.length; i++){
-		var row = array[i];
+function getDimensionsForNewSheet(sheetArray){
+	let rows = sheetArray.length;
+	let columns = 1;
+	for (let i=0; i<sheetArray.length; i++){
+		var row = sheetArray[i];
 		var rowLength = row.length;
 		if (rowLength > columns){columns = rowLength;}
 	}
-	return {'rows':rows, 'columns':columns};
+	return {rows, columns};
 }
 
-function makeNewSheet(workbook, array, name){
-	dimensions = getDimensionsForNewSheet(array);
-	//console.log(name + " " + JSON.stringify(dimensions));
-	var newSheet = workbook.createSheet(name, dimensions.columns, dimensions.rows);
+function makeNewSheet(workbook, inputArray, name, populateNow = false){
+	//without populateNow create an empty sheet properly sized for the data
+	//with populateNow, add the data in as well. This option is probably used 95% of the time.
+	let dimensions = getDimensionsForNewSheet(inputArray);
+	console.log(name + " " + JSON.stringify(dimensions));
+	let newSheet = workbook.createSheet(name, dimensions.columns, dimensions.rows);
 	setReasonableColumnWidths(dimensions, newSheet);
-	sheets[name] = {sheet:newSheet, dimensions:dimensions};
+	sheets[name] = {sheet:newSheet, dimensions};
+	if (populateNow){
+		newSheet = populate_sheet_from_array_of_arrays(newSheet, inputArray);
+	}
 	return newSheet;
 }
 
 function applyStylesToTheWholeSheet(sheetObj, styleObj){
-	let cols = sheetObj.dimensions.columns;
-	let rows = sheetObj.dimensions.columns;
-	let sheet = sheetObj.sheet;
-	for (var col=1; col<=cols; col++){
-		for (var row=1; row<=rows; row++){
+	//do a little method overloading to let both enhanced sheet Objs
+	//(those with dimension attributes, created by makeNewSheet)
+	//and normal unmodified sheetObjs work
+	var cols = sheetObj.cols || sheetObj.sheet.cols;
+	var rows = sheetObj.rows || sheetObj.sheet.rows;
+	var sheet = sheetObj.sheet || sheetObj;
+	
+	for (let col=1; col<=cols; col++){
+		for (let row=1; row<=rows; row++){
 			if (styleObj.hasOwnProperty("font")){
 				sheet.font(col, row, styleObj.font);
 			}
@@ -78,7 +89,7 @@ function setReasonableColumnWidths(dimensions, worksheet){
 }
 
 function setColumnWidths (dimensions, worksheet, defaultWidth, firstWidth){
-	for (var i=0; i<dimensions.columns; i++){
+	for (let i=0; i<dimensions.columns; i++){
 		if (i === 0 && firstWidth >= 0){
 			worksheet.width(i+1, firstWidth);
 		}
@@ -89,7 +100,7 @@ function setColumnWidths (dimensions, worksheet, defaultWidth, firstWidth){
 }
 
 function setRowHeights (dimensions, worksheet, defaultHeight, firstHeight){
-	for (var i=0; i<dimensions.rows; i++){
+	for (let i=0; i<dimensions.rows; i++){
 		if (i === 0 && firstHeight >= 0){
 			worksheet.height(i+1, firstHeight);
 		}
@@ -100,12 +111,13 @@ function setRowHeights (dimensions, worksheet, defaultHeight, firstHeight){
 }
 
 function setBorder(sheet, style, startLocation, direction){
+	let x, y = 0;
 	if (Array.isArray(startLocation)){
 		//do some overload detection - if an array with two elements exists
 		if (startLocation.length === 2){
 			// then it is [x,y] and we convert to a property
-			var x = startLocation[0];
-			var y = startLocation[1];
+			x = startLocation[0];
+			y = startLocation[1];
 			startLocation = {column:y, row:x};
 		}
 		else {
@@ -146,9 +158,10 @@ function getSheets(){
 }
 
 module.exports = {
-	getDimensionsForNewSheet : getDimensionsForNewSheet,
-	makeNewSheet : getDimensionsForNewSheet,
-	applyStylesToTheWholeSheet : applyStylesToTheWholeSheet,
-	setBorder : setBorder,
-	getSheets: getSheets
+	getDimensionsForNewSheet,
+	makeNewSheet,
+	applyStylesToTheWholeSheet,
+	setBorder,
+	getSheets,
+	populate_sheet_from_array_of_arrays
 };

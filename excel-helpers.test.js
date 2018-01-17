@@ -10,20 +10,18 @@ test("test worksheet creation", () => {
 	expect(workbook).toBeDefined();
 });
 
-test("test worksheet creation", () => {
-	var newSheet = workbook.createSheet("demo sheet", 3, 3);
-	console.log(newSheet);
+test("test manual worksheet creation", () => {
+	var newSheet = workbook.createSheet("demo sheet", 2, 2);
 	expect(newSheet).toBeDefined();
+	expect(newSheet.name).toEqual("demo sheet");
 });
 
 test("empty new sheet is created with correct name", () => {
-	let emptyName = "empty sheet";
-	let ws = excel.makeNewSheet(workbook, [["empty name test", "col 2"], ["row 2"]], emptyName);
-	console.log(ws);
-	console.log(excel.getSheets());
+	let emptyName = "test new sheet const";
+	var ws = excel.makeNewSheet(workbook, [[0, 1], [3]], emptyName);
 	expect(ws.name).toEqual(emptyName);
 	expect(excel.getSheets()[emptyName]).toBeDefined();
-	expect(excel.getSheets()[emptyName].dimensions).toEqual({'rows':1, 'columns':1});
+	expect(excel.getSheets()[emptyName].dimensions).toEqual({'rows':2, 'columns':2});
 });
 
 test("sheet dimension measurements are accurate", () => {
@@ -42,25 +40,70 @@ test("sheet dimensions are accurate", () => {
 	expect(excel.getDimensionsForNewSheet([[0],[1,2]])).toEqual({'rows':2, 'columns':2});
 });
 
-/*
 test("array construction", () => {
-	populate_sheet_from_array_of_arrays
+	var newSheet = workbook.createSheet("array population", 3, 3);
+	let arr = [ [0,1,2],[3,4,5],[6,7,8] ];
+	const expectedArray = [
+		[{"dataType": "number", "v":0}, {"dataType": "number", "v":1}, {"dataType": "number", "v":2}],
+		[{"dataType": "number", "v":3}, {"dataType": "number", "v":4}, {"dataType": "number", "v":5}],
+		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}],
+	];
+	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
+	let row1 = Object.keys(updatedSheet.data[1]).map(e => updatedSheet.data[1][e]);
+	let row2 = Object.keys(updatedSheet.data[2]).map(e => updatedSheet.data[2][e]);
+	let row3 = Object.keys(updatedSheet.data[3]).map(e => updatedSheet.data[3][e]);
+	let compArray = [row1, row2, row3];
+	expect(compArray).toEqual(expectedArray);
+	let reducedCompArray = compArray.map(x => x.map(y => y.v));
+	expect(reducedCompArray).toEqual(arr);
 });
-*/
+
+test("array construction - styles", () => {
+	var newSheet = workbook.createSheet("array population styles", 3, 3);
+	var style = {"fill": { type: 'solid', fgColor: 'DDDDDD'}};
+	var arr = [ [{"style":style, "value":0},1,2],[3,{"style":style, "value":4},5],[6,7,{"style":style, "value":8}] ];
+	var strippedArr = arr.map(x => x.map(function(y){ if (y.hasOwnProperty('value')){return y['value'];} return y;}));
+	const expectedArray = [
+		[{"dataType": "number", "v":0}, {"dataType": "number", "v":1}, {"dataType": "number", "v":2}],
+		[{"dataType": "number", "v":3}, {"dataType": "number", "v":4}, {"dataType": "number", "v":5}],
+		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}],
+	];
+	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
+	let row1 = Object.keys(updatedSheet.data['1']).sort().map(e => updatedSheet.data['1'][e]);
+	let row2 = Object.keys(updatedSheet.data['2']).sort().map(e => updatedSheet.data['2'][e]);
+	let row3 = Object.keys(updatedSheet.data['3']).sort().map(e => updatedSheet.data['3'][e]);
+	let compArray = [row1, row2, row3];
+	//types and values should remain the same as if no styles were applied
+	expect(compArray).toEqual(expectedArray);
+	let reducedCompArray = compArray.map(x => x.map(y => y.v));
+	expect(reducedCompArray).toEqual(strippedArr);
+	//styles should also be applied
+	expect(updatedSheet.styles).toEqual({ fill_1_1: 2, fill_2_2: 2, fill_3_3: 2 });
+});
+
+test("apply style to entire sheet", () => {
+	var newSheet = workbook.createSheet("style whole sheet", 2, 2);
+	var style = {"fill": { type: 'solid', fgColor: 'DDDDDD'}};
+	var arr = [ [1,2], [2,4]];
+	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
+	excel.applyStylesToTheWholeSheet(updatedSheet, style);
+	expect(updatedSheet.styles).toEqual({ fill_1_1: 1, fill_1_2: 1, fill_2_1: 1, fill_2_2: 1 });
+	let fills = updatedSheet.book.st.mfills;
+	//check if the fill color is correct
+	expect(fills[1]).toEqual({'type': 'solid', fgColor: 'DDDDDD', 'bgColor': '-'});
+});
 
 test("border construction - rejects improper input", () => {
 	let style = {bottom:'thin'};
 	let ws = excel.makeNewSheet(workbook, [["empty name test"],[0]], "border improper");
-	console.log(ws);
 	expect(() => {
 		excel.setBorder(ws, style, '', 4);
 	}).toThrow("no startLocation present");
 	expect(() => {
 		excel.setBorder(ws, style, [1], 4);
 	}).toThrow("startLocation dimensions are wrong");
-	expect(() => {
-		excel.setBorder(ws, style, [1,1], 4);
-	}).toThrow("startLocation dimensions are wrong");
+	//this should not throw any error
+	excel.setBorder(ws, style, [1,1], 4);
 });
 
 test("border construction - method overloading works", () => {
@@ -68,13 +111,13 @@ test("border construction - method overloading works", () => {
 	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border overloading");
 	excel.setBorder(ws, style, {row:1,column:1}, 2);
 	excel.setBorder(ws, style, [3,1], 1);
+
 });
 
-/*
 test("border construction - length", () => {
 	let style = {bottom:'thin'};
-	let ws = excel._makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border length");
-	excel._setBorder(ws, style, {row:1,colummn:1}, 2);
-	excel._setBorder(ws, style, [3,1], 1);
+	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border length");
+	excel.setBorder(ws, style, [3,1], {'long':4});
+	excel.setBorder(ws, style, [3,1], {'tall':2});
 });
-*/
+

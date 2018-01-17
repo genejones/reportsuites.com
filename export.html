@@ -67,27 +67,22 @@
             <p class="lead">Your Adobe credentials are not stored. No changes to your Adobe Analytics account will be enacted by this code.</p>
             <form id="adobe-action">
                 <div class="form-group row">
-                    <label for="adobe-username" class="col-form-label">Adobe Analytics Username</label>
+                    <label for="adobe-username" class="col-form-label" for="adobe-username">Adobe Analytics Username</label>
                     <input class="form-control" type="text" placeholder="Enter username" id="adobe-username">
                     <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
                 <div class="form-group row">
-                  <label for="adobe-secret" class="col-form-label">Adobe Analytics Secret</label>
+                  <label for="adobe-secret" class="col-form-label" for="adobe-secret">Adobe Analytics Secret</label>
                   <input class="form-control" type="text" placeholder="Insert your secret" id="adobe-secret">
                   <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
                 </div>
-				<div class="form-group row">
-					<div class="btn-group" data-toggle="buttons">
-						<label class="btn btn-primary active">
-						<input type="checkbox" checked autocomplete="off"> Save credentials to localStorage.
-						</label>
-					</div>
-				</div>
                 <div class="form-group row">
-                  <label for="filename" class="col-form-label">Filename</label>
+                  <label for="filename" class="col-form-label" for="filename">Filename</label>
                   <div class="input-group">
                     <input class="form-control" type="text" value="analytics-config" id="filename">
-                    <div class="input-group-addon">.xlsx</div>
+                    <div class="input-group-append">
+						<div class="input-group-text">.xlsx</div>
+					</DIV>
                   </div>
                   <small class="form-text text-muted">Name it something clear and memorable.</small>
                 </div>

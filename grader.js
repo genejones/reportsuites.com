@@ -23,10 +23,9 @@ grader.getRSID = function(){
 	grader.rsids = rsids;
 };
 
-grader.getData = function(){
+grader.getData = function(arr){
 	//determine how many variables aren't setup
-	evars.
-	for (var i=0; i<length; i++){
+	for (var i=0; i<arr.length; i++){
 		
 	}
 };

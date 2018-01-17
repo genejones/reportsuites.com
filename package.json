@@ -57,7 +57,8 @@
       "progress-display.handlebars$": "<rootDir>/__mocks__/progress-display.js",
       "select_rsid.handlebars$": "<rootDir>/__mocks__/select_rsid.js"
     },
-	"setupFiles": ["<rootDir>/__mocks__/jquery.js"]
+	"setupFiles": ["<rootDir>/__mocks__/jquery.js"],
+	"collectCoverageFrom": ["*.js", "!<rootDir>/node_modules/", "!<rootDir>/assets/*", "!ecosystem.config.js", "!grader.js", "!essentials-setup.js", "!adobe-api-helpers.js"]
   },
   "browserify" : {
 	"entry": "client-handler.js",
