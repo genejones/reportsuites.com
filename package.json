@@ -25,7 +25,8 @@
     "uglifyify": "^4.0.5"
   },
   "scripts": {
-    "test": "jest --coverage",
+    "coverage": "jest --coverage",
+    "test": "jest",
 	"build": "browserify client-handler.js -o adobe-export.js",
     "watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
     "bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
