@@ -1,7 +1,7 @@
 "use strict";
 exports.__esModule = true;
-var $ = require("jquery");
-var jQuery = $;
+//var $ = require("jquery");
+//var jQuery = $;
 var wsse = require('wsse');
 var request = require('browser-request');
 var excel = require('./excel-handler.js');

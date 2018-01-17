@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Reportsuites.com: Tools for Adobe Analytics</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Reportsuites.com: Tools for Adobe Analytics</title>
   <meta name="description" content="Rate or quickly view your reportsuite configurations.">
   <meta name="author" content="Gene Jones">
   <meta name="keywords" content="Adobe Analytics, Reportsuites.com, Excel export, excel output, grading">
@@ -26,10 +26,9 @@
 
   <link rel="dns-prefetch" href="//fonts.googleapis.com/">
   <link rel="dns-prefetch" href="//www.googletagmanager.com">
+  <link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com">
   <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
-  <link href="https://fonts.googleapis.com/css?family=Allerta" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
   <!-- Custom styles for this template -->
   <link href="custom.css" rel="stylesheet">
   <!-- FontAwesome! -->
@@ -57,55 +56,80 @@
 		<div class="row">
 			<div class="col-md-2 offset-md-5"><img class="logo img-fluid" title="Reportsuite Lanyard" src="/assets/icons/icon.svg" alt="Reportsuites.com lanyard logo"></div>
 		</div>
-		<h2 class="text-muted display-3 mx-auto">Tools for Adobe Analytics</h2>
+		<h1 class="text-muted display-3 mx-auto">Tools for Adobe Analytics</h1>
 	</div>
 	
 	<div class="jumbotron">
-	<div class="row">
-
-	<div class="col-lg-6">
-		<i class="far fa-compass fa-3x"></i>
-		<span class="fa-layers">
-			<i class="far fa-map fa-3x"></i>
-			<i class="far fa-question"></i>
-		</span>
-		<h5 class="display-5">Lost in your eVars?</h5>
-		<p class="lead">Export <mark>all</mark> your reportsuite configs to Excel.</p>
-		<a class="btn btn-outline-success" href="export.html" data-toggle="modal" role="button">Let's do this!</a>
-	</div>
-
-	<div class="col-lg-6">
-		<i class="far fa-tachometer-alt fa-3x"></i> 
-		<h5 class="display-5">Grade your config</h5>
-		<p class="lead">Find out how to improve your reportsuite!</p>
-		<a class="btn btn-outline-danger disabled" href="grader.html" data-toggle="modal" role="button">Coming soon</a>
-	</div>
-	
-	</div>
+		<div class="row">
+			<div class="col-lg-6">
+				<div class="card">
+					<div class="card-header">
+					<i class="far fa-compass fa-3x"></i>
+					</div>
+					<div class="card-body">
+					<h5 class="card-title">Lost in your eVars?</h5>
+					<p class="card-text">Export <mark>all</mark> your reportsuite configs to Excel.</p>
+					<a class="btn btn-outline-success" href="export.html" data-toggle="modal" role="button">Let's do this!</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-6">
+				<div class="card">
+					<div class="card-header">
+					<i class="far fa-tachometer-alt fa-3x"></i> 
+					</div>
+					<div class="card-body">
+					<h5 class="card-title">Grade your config</h5>
+					<p class="card-text">Find out how to improve your reportsuite!</p>
+					<a class="btn btn-outline-danger disabled" href="grader.html" data-toggle="modal" role="button">Coming soon</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="row marketing">
 	<div class="col-lg-6">
-	  <h4>Easy</h4>
-	  <p>View all your configuration options in Excel quickly across several report suites.</p>
-
-	  <h4>Secure</h4>
-	  <p>All requests take place in your browser. I never have access to your Adobe credentials.</p>
-
+		<div class="card text-center">
+		<div class="card-header">
+			<h5 class="card-title">Easy</h5>
+		</div>
+		<div class="card-body">
+			<p class="card-text">View all your configuration options in Excel quickly across several report suites.</p>
+		</div>
+		</div>
+		<div class="card text-center">
+			<div class="card-header">
+				<h5 class="card-title">Secure</h5>
+			</div>
+		  <div class="card-body">
+			<p class="card-text">All requests take place in your browser. I never have access to your Adobe credentials.</p>
+		  </div>
+		</div>
 	</div>
 
 	<div class="col-lg-6">
-	  <h4>Community</h4>
-	  <p><a href="#" data-toggle="modal" data-target="#information-collected">Basic stats</a> about your report suite will be used to create community utilization reports.</p>
-
-	  <h4>Premium Upgrades</h4>
-	  <p>A premier option, coming soon, will let you schedule monthly pulls of your config.</p>
-
+		<div class="card text-center">
+			<div class="card-header">
+				<h5 class="card-title">Community</h5>
+			</div>
+		  <div class="card-body">
+			<p class="card-text"><a href="#" data-toggle="modal" data-target="#information-collected">Basic stats</a> about your report suite will be used to create community utilization reports.</p>
+		  </div>
+		</div>
+		<div class="card text-center">
+			<div class="card-header">
+				<h5 class="card-title">Premium Upgrades</h5>
+			</div>
+		  <div class="card-body">
+			<p class="card-text">A premier option, coming soon, will let you schedule monthly pulls of your config.</p>
+		  </div>
+		</div>
 	</div>
 	</div>
 
 	<footer class="footer">
-	<p>© Gene Jones 2017-2018. <small>CSS by Bootstrap 4, with patterning by <a href="http://www.heropatterns.com/">Steve Schoger/Hero Patterns</a></small></p>
+	<p><strong>© Gene Jones 2017-2018</strong>. <small>CSS by Bootstrap 4, with patterning by <a href="http://www.heropatterns.com/">Steve Schoger/Hero Patterns</a>. msexcel-builder used for Excel generation.</small></p>
 	</footer>
 
     </div> <!-- /container -->

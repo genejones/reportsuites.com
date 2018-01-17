@@ -22,11 +22,10 @@
     "browserify-handlebars": "^1.0.0",
     "jest": "^22.0.6",
     "minifyify": "^7.3.5",
-    "nyc": "^11.4.1",
     "uglifyify": "^4.0.5"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
 	"build": "browserify client-handler.js -o adobe-export.js",
     "watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
     "bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
@@ -56,7 +55,8 @@
     "moduleNameMapper": {
       "progress-display.handlebars$": "<rootDir>/__mocks__/progress-display.js",
       "select_rsid.handlebars$": "<rootDir>/__mocks__/select_rsid.js"
-    }
+    },
+	"setupFiles": ["<rootDir>/__mocks__/jquery.js"]
   },
   "browserify" : {
 	"entry": "client-handler.js",
