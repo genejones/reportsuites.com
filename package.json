@@ -20,20 +20,21 @@
   },
   "devDependencies": {
     "browserify-handlebars": "^1.0.0",
+    "coveralls": "^3.0.0",
     "jest": "^22.0.6",
     "minifyify": "^7.3.5",
     "uglifyify": "^4.0.5"
   },
   "scripts": {
     "coverage": "jest --coverage",
+	"coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "jest",
-	"build": "browserify client-handler.js -o adobe-export.js",
+    "build": "browserify client-handler.js -o adobe-export.js",
     "watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
     "bundle": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
-	"build-essentials": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] essentials-setup.js -o assets/js/essentials.js -v",
+    "build-essentials": "browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] essentials-setup.js -o assets/js/essentials.js -v",
     "mocks": "handlebars progress-display.handlebars -f __mocks__/progress-display.js && handlebars select_rsid.handlebars -f __mocks__/select_rsid.js"
   },
-  "main":"client-handler.js",
   "keywords": [
     "adobe",
     "analytics",
@@ -57,17 +58,27 @@
       "progress-display.handlebars$": "<rootDir>/__mocks__/progress-display.js",
       "select_rsid.handlebars$": "<rootDir>/__mocks__/select_rsid.js"
     },
-	"setupFiles": ["<rootDir>/__mocks__/jquery.js"],
-	"collectCoverageFrom": ["*.js", "!<rootDir>/node_modules/", "!<rootDir>/assets/*", "!ecosystem.config.js", "!grader.js", "!essentials-setup.js", "!adobe-api-helpers.js"]
+    "setupFiles": [
+      "<rootDir>/__mocks__/jquery.js"
+    ],
+    "collectCoverageFrom": [
+      "*.js",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/assets/*",
+      "!ecosystem.config.js",
+      "!grader.js",
+      "!essentials-setup.js",
+      "!adobe-api-helpers.js"
+    ]
   },
-  "browserify" : {
-	"entry": "client-handler.js",
-	"transform": [
-		"browserify-shim",
-		"hbsfy"
-	]
+  "browserify": {
+    "entry": "client-handler.js",
+    "transform": [
+      "browserify-shim",
+      "hbsfy"
+    ]
   },
   "browserify-shim": {
-	"jQuery": "global:jQuery"
+    "jQuery": "global:jQuery"
   }
 }
