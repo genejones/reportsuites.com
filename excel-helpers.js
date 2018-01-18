@@ -47,7 +47,6 @@ function makeNewSheet(workbook, inputArray, name, populateNow = false){
 	//without populateNow create an empty sheet properly sized for the data
 	//with populateNow, add the data in as well. This option is probably used 95% of the time.
 	let dimensions = getDimensionsForNewSheet(inputArray);
-	console.log(name + " " + JSON.stringify(dimensions));
 	let newSheet = workbook.createSheet(name, dimensions.columns, dimensions.rows);
 	setReasonableColumnWidths(dimensions, newSheet);
 	sheets[name] = {sheet:newSheet, dimensions};
@@ -162,6 +161,8 @@ module.exports = {
 	makeNewSheet,
 	applyStylesToTheWholeSheet,
 	setBorder,
+	setRowHeights,
+	setColumnWidths,
 	getSheets,
 	populate_sheet_from_array_of_arrays
 };

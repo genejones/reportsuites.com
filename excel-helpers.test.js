@@ -19,9 +19,33 @@ test("test manual worksheet creation", () => {
 test("empty new sheet is created with correct name", () => {
 	let emptyName = "test new sheet const";
 	var ws = excel.makeNewSheet(workbook, [[0, 1], [3]], emptyName);
+	//check creation
 	expect(ws.name).toEqual(emptyName);
 	expect(excel.getSheets()[emptyName]).toBeDefined();
 	expect(excel.getSheets()[emptyName].dimensions).toEqual({'rows':2, 'columns':2});
+	//verify reasonableColumnWidths were set
+	//expect(ws.col_wd);
+});
+
+test("empty new sheet is created and populated", () => {
+	let emptyName = "populated new sheet";
+	let arr = [[0, 1], [2, 3]];
+	var ws = excel.makeNewSheet(workbook, arr, emptyName, true);
+	//check creation
+	expect(ws.name).toEqual(emptyName);
+	expect(excel.getSheets()[emptyName]).toBeDefined();
+	expect(excel.getSheets()[emptyName].dimensions).toEqual({'rows':2, 'columns':2});
+	//check population
+	let row1 = Object.keys(ws.data[1]).map(e => ws.data[1][e]);
+	let row2 = Object.keys(ws.data[2]).map(e => ws.data[2][e]);
+	let compArray = [row1, row2];
+	const expectedArray = [
+		[{"dataType": "number", "v":0}, {"dataType": "number", "v":1}],
+		[{"dataType": "number", "v":2}, {"dataType": "number", "v":3}]
+	];
+	expect(compArray).toEqual(expectedArray);
+	let reducedCompArray = compArray.map(x => x.map(y => y.v));
+	expect(reducedCompArray).toEqual(arr);
 });
 
 test("sheet dimension measurements are accurate", () => {
@@ -46,7 +70,7 @@ test("array construction", () => {
 	const expectedArray = [
 		[{"dataType": "number", "v":0}, {"dataType": "number", "v":1}, {"dataType": "number", "v":2}],
 		[{"dataType": "number", "v":3}, {"dataType": "number", "v":4}, {"dataType": "number", "v":5}],
-		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}],
+		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}]
 	];
 	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
 	let row1 = Object.keys(updatedSheet.data[1]).map(e => updatedSheet.data[1][e]);
@@ -66,7 +90,7 @@ test("array construction - styles", () => {
 	const expectedArray = [
 		[{"dataType": "number", "v":0}, {"dataType": "number", "v":1}, {"dataType": "number", "v":2}],
 		[{"dataType": "number", "v":3}, {"dataType": "number", "v":4}, {"dataType": "number", "v":5}],
-		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}],
+		[{"dataType": "number", "v":6}, {"dataType": "number", "v":7}, {"dataType": "number", "v":8}]
 	];
 	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
 	let row1 = Object.keys(updatedSheet.data['1']).sort().map(e => updatedSheet.data['1'][e]);
@@ -111,13 +135,46 @@ test("border construction - method overloading works", () => {
 	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border overloading");
 	excel.setBorder(ws, style, {row:1,column:1}, 2);
 	excel.setBorder(ws, style, [3,1], 1);
-
+	console.log(ws.styles);
 });
 
 test("border construction - length", () => {
 	let style = {bottom:'thin'};
 	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border length");
-	excel.setBorder(ws, style, [3,1], {'long':4});
-	excel.setBorder(ws, style, [3,1], {'tall':2});
+	excel.setBorder(ws, style, {row:1,column:2}, {'long':3});
+	//expect(ws.sheet.style).toEqual({bder_1_3:2, bder_2_3:2, bder_3_3: 2});
+	console.log(ws.styles);
+	excel.setBorder(ws, style, {row:3,column:1}, {'tall':2});
+	console.log(ws.styles);
+});
+
+test("setRowHeights", () => {
+	let ws = excel.getSheets()["border length"];
+	let defaultHeight = 8;
+	excel.setRowHeights(ws.dimensions, ws.sheet, defaultHeight);
+	expect(ws.sheet.row_ht).toEqual({'1': defaultHeight, '2': defaultHeight});
+});
+
+test("setRowHeights - firstRowHeight", () => {
+	let ws = excel.getSheets()["border overloading"];
+	let defaultHeight = 8;
+	let firstHeight = 12;
+	excel.setRowHeights(ws.dimensions, ws.sheet, defaultHeight, firstHeight);
+	expect(ws.sheet.row_ht).toEqual({'1': firstHeight, '2': defaultHeight});
+});
+
+test("setColumnWidths", () => {
+	let ws = excel.getSheets()["border overloading"];
+	let defaultWidth = 21;
+	excel.setColumnWidths(ws.dimensions, ws.sheet, defaultWidth);
+	console.log(ws.sheet);
+});
+
+test("setColumnWidths with first column", () => {
+	let ws = excel.getSheets()["border overloading"];
+	let defaultWidth = 22;
+	let firstWidth = 12;
+	excel.setColumnWidths(ws.dimensions, ws.sheet, defaultWidth, firstWidth);
+	console.log(ws.sheet);
 });
 
