@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Configurations Export to Excel</title>
+	<meta name="description" content="Easily export all your report suites config to Excel.">
+	<meta name="author" content="Gene Jones">
+	<meta name="keywords" content="Adobe Analytics, Reportsuites.com, Excel export, excel output, grading">
+	<!-- All the favicon info -->
+	<link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png">
+	<link rel="manifest" href="/assets/icons/manifest.json">
+	<link rel="mask-icon" href="/assets/icons/icon.svg" color="#da532c">
+	<link rel="shortcut icon" href="/assets/icons/favicon.ico">
+	<meta name="msapplication-config" content="/assets/icons/browserconfig.xml">
+	<meta name="theme-color" content="#93b5b5">
+	<!-- Open Graph data -->
+	<meta property="og:title" content="Reportsuites.com: Tools for Adobe Analytics" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="https://reportsuites.com/" />
+	<meta property="og:image" content="https://reportsuites.com/assets/icons/mstile-150x150.png" />
+	<meta property="og:description" content="Tackling the details of your reportsuites." />
+	<meta property="og:site_name" content="Reportsuites.com" />
+
+	<link rel="dns-prefetch" href="//code.jquery.com">
+	<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+	<link rel="dns-prefetch" href="//www.googletagmanager.com">
+	<link rel="dns-prefetch" href="//maxcdn.bootstrapcdn.com">
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    <!-- Custom styles for this template -->
+    <link href="custom.css" rel="stylesheet">
+	<!-- Google Tag Manager -->
+	<script>
+	dataLayer = window.dataLayer = window.dataLayer || [];
+	//dataLayer.push();
+	(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-NG5QWXV');</script>
+	<!-- End Google Tag Manager -->
+	<!-- JavaScript all deferred, will work on IE10+ and all major current browsers -->
+	<script defer src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+	<script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+	<script defer src="assets/js/jszip.min.js"></script>
+	<script defer src="assets/js/xmlbuilder.min.js"></script>
+	<script defer src="assets/js/msexcel-builder.min.js"></script>
+    <script defer src="adobe-export.js"></script>
+  </head>
+
+  <body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NG5QWXV"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+<div class="container content-container">
+      <div class="header clearfix">
+        <h1 class="text-muted display-3 mx-auto">Adobe Configuration Export</h1>
+      </div>
+
+    <div class="jumbotron">
+      <p class="strong">Lost in your eVars?</p>
+			<h3 class="display-5">Find all your configuration details easily</h3>
+            <p class="lead">Your Adobe credentials are not stored. No changes to your Adobe Analytics account will be enacted by this code.</p>
+            <form id="adobe-action">
+                <div class="form-group row">
+                    <label for="adobe-username" class="col-form-label" for="adobe-username">Adobe Analytics Username</label>
+                    <input class="form-control" type="text" placeholder="Enter username" id="adobe-username">
+                    <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
+                </div>
+                <div class="form-group row">
+                  <label for="adobe-secret" class="col-form-label" for="adobe-secret">Adobe Analytics Secret</label>
+                  <input class="form-control" type="text" placeholder="Insert your secret" id="adobe-secret">
+                  <small class="form-text text-muted">Confused? <a href="#" data-toggle="modal" data-target="#adobe-instructions-modal">Here's how to get this.</a></small>
+                </div>
+                <div class="form-group row">
+                  <label for="filename" class="col-form-label" for="filename">Filename</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" value="analytics-config" id="filename">
+                    <div class="input-group-append">
+						<div class="input-group-text">.xlsx</div>
+					</DIV>
+                  </div>
+                  <small class="form-text text-muted">Name it something clear and memorable.</small>
+                </div>
+                <button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#information-collected-warning" role="button">Let's do this!</button>
+            </form>
+          </div>
+	<div class="pl-3 pr-3 ml-1 mr-1" id="marketing-cards">
+		<div class="row">
+			<div class="card-deck">
+				<div class="card text-center">
+					<div class="card-header">
+						<h5 class="card-title">Easy</h5>
+					</div>
+				  <div class="card-body">
+					<p class="card-text">View all your configuration options in Excel quickly across several report suites.</p>
+				  </div>
+				</div>
+				<div class="card text-center">
+					<div class="card-header">
+						<h5 class="card-title">Secure</h5>
+					</div>
+				  <div class="card-body">
+					<p class="card-text">All requests take place in your browser. I never have access to your Adobe credentials.</p>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<div class="row mt-2">
+			<div class="card-deck">
+				<div class="card text-center">
+					<div class="card-header">
+						<h5 class="card-title">Community</h5>
+				</div>
+				<div class="card-body">
+					<p class="card-text">Basic stats about your report suite will be used to create community utilization reports.</p>
+				  </div>
+				</div>
+				<div class="card text-center">
+					<div class="card-header">
+						<h5 class="card-title">Open Source</h5>
+					</div>
+				  <div class="card-body">
+					<p class="card-text">Have any ideas for improvements? <a href="https://github.com/genejones/reportsuites.com" rel="noopener">Visit my Github</a>.</p>
+				  </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div> <!-- /container -->
+<div class="mt-3"></div>
+<footer class="footer">
+	<p class="ml-3"><strong>© Gene Jones</strong> 2017-2018. <small>CSS by Bootstrap 4, with patterning by <a href="http://www.heropatterns.com/" rel="noopener">Steve Schoger/Hero Patterns</a>. msexcel-builder used for Excel generation.</small></p>
+</footer>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="information-collected-warning">
+	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h4 class="modal-title">Information Collected</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  </div>
+	  <div class="modal-body small">
+		<div class="alert alert-warning" role="alert">
+		  <strong>Warning!</strong> Adobe credentials can be used to read or change anything in Adobe Marketing Suite. Don't give them out willy-nilly.
+		</div>
+		<div class="alert alert-info" role="alert">
+		  <strong>Your analytics are safe.</strong> Your credentials never leave your browser. They are used to create WSSE authorizations.
+		</div>
+		<div class="alert alert-info" role="alert">
+		   Four non-modifying requests will be made to Adobe.
+		   <br><a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getreportsuites-1" rel="noopener" class="alert-link">Company.GetReportSuites</a>, <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getprops" rel="noopener" class="alert-link">ReportSuite.GetProps</a>, <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getevents" rel="noopener" class="alert-link">ReportSuite.GetEvents</a> and <a href="https://marketing.adobe.com/developer/documentation/analytics-administration-1-4/r-getevars-1" rel="noopener" class="alert-link">ReportSuite.GetEvars</a>.
+		</div>
+		<div class="alert alert-warning" role="alert">
+			I promise to do nothing nefarious and you can verify that your credentials are safe by looking at outgoing network traffic.
+			<br>If all this makes you nervous, you may want to refresh your Adobe Web credentials after using this service.
+			<br>After refreshing your credentials, your old credentials can no longer be used. This protects your Adobe data.
+		</div>
+		<h3>I collect the following information</h3>
+		<h6>This information will be used to create whitepapers for the education of the analytics community.</h6>
+		<p>You consent for me to retain a portion of the data which I will obtain from Adobe on your behalf.
+		When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a pepper and 5000 iterations.
+		This level of hashing security is the <a target="_blank" rel="noopener" href="https://helpdesk.lastpass.com/account-settings/general/password-iterations-pbkdf2/">same LastPass uses to locally encrypt passwords</a>.
+		This hashing system will protect your identifying details for years to come.
+		I will collect the following information:</p>
+		<ul>
+			<li>A hash of the filename you used.</li>
+			<li>A hash of the organization name. <span class="small">Your organization name is not captured directly.</span></li>
+			<li>A hash of your user name. <span class="small">Your username is not captured directly.</span></li>
+			<li>The total number of report suites in your organization. <span class="small strong">The titles and rsids of these reportsuites are not captured.</span></li>
+			<li>For each report suite you select to include in the report, I may also collect the following:</li>
+			<ul>
+				<li>How many eVars, props, and events are enabled.</li>
+				<li>How many eVars, props, and events have descriptions.</li>
+				<li>How many eVars, props, and events have names.</li>
+				<li>How many eVars, props, and events have names but which are not enabled.</li>
+				<li>The slot numbers (e.g. eVar2, prop4) of configured eVars, props, and events.</li>
+			</ul>
+		</ul>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<button type="button" id="action-initial" class="btn btn-primary" data-dismiss="modal">I Accept, Continue</button>
+	  </div>
+	</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="information-collected">
+	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h4 class="modal-title">FYI, here is all Information Collected</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	</div>
+	<div class="modal-body">
+		<h3>I collect the following information</h3>
+		<h6>This information will be used to create whitepapers for the education of the analytics community.</h6>
+		<p>You consent for me to retain a portion of the data which I will obtain from Adobe on your behalf.
+		When information is hashed, it will be done with the PBKDF2 algorithm (an algorithm recommended to protect passwords), using a salt and 5000 iterations.
+		This hashing system will protect your identifying details for years to come.
+		<p>Hashing is a one-way process. Once your information has been hashed, nobody will be able to access it.</p>
+		<p>I will collect the following information:</p>
+		<ul>
+			<li>A hash of the filename you used.</li>
+			<li>A hash of the organization name. <span class="small">Your organization name is not captured directly.</span></li>
+			<li>A hash of your user name. <span class="small">Your username is not captured directly.</span></li>
+			<li>The total number of report suites in your organization. <span class="small strong">The titles and rsids of these reportsuites are not captured.</span></li>
+			<li>For each report suite you select to include in the report, I may also collect the following:</li>
+			<ul>
+				<li>How many eVars, props, and events are enabled.</li>
+				<li>How many eVars, props, and events have descriptions.</li>
+				<li>How many eVars, props, and events have names.</li>
+				<li>How many eVars, props, and events have names but which are not enabled.</li>
+				<li>The slot numbers (e.g. eVar2, prop4) of configured eVars, props, and events.</li>
+			</ul>
+		</ul>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="adobe-instructions-modal">
+	<div class="modal-dialog modal-lg" role="document">
+	<div class="modal-content">
+	  <div class="modal-header">
+		<h4 class="modal-title">How to Obtain your Adobe Credentials</h4>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  </div>
+	  <div class="modal-body">
+		<!-- add smallest transparent gif to the images, along with the actual source. Lazy load the images later -->
+		<span id="cred-instructions-0" data-current-instruction="true" data-next-step="cred-instructions-1"><h5>Find your user profile on the top menu</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-1-0.jpg" /></span>
+		<span id="cred-instructions-1" data-prev-step="cred-instructions-0" data-next-step="cred-instructions-2" class="collapse"><h5>Click "Edit your profile"</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-1-1.jpg" /></span>
+		<span id="cred-instructions-2" data-prev-step="cred-instructions-1" class="collapse"><h5>Scroll to "Web Service". Your credentials are located here. Keep them secret and safe.</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-2.jpg" /></span>
+	  </div>
+	  <div class="modal-footer">
+		<nav aria-label="...">
+		  <ul class="pager">
+			<li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Previous Step</a></li>
+			<li class="next"><a href="#">Next Step <span aria-hidden="true">&rarr;</span></a></li>
+		  </ul>
+		</nav>
+		<button style="display:none;" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	  </div>
+	</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+</body></html>

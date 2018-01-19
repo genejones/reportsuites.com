@@ -7,3 +7,5 @@ watchify -t hbsfy -g [uglifyify -x .js] client-handler.js -o adobe-export.js -v
 
 watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v
 
+
+browserify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] assets/js/xmlbuilder.js -o assets/js/xmlbuilder.min.js -v

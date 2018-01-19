@@ -1,7 +1,7 @@
-//var uniq = require('lodash/uniq');
 var union = require('lodash/union');
 var keys = require('lodash/keys');
 var FileSaver = require('file-saver');
+var excelHelpers = require('./excel-helpers.js');
 
 var styles = {
 	'active' : {"fill": { type: 'solid', fgColor: '3D9970'}},
@@ -13,139 +13,6 @@ var styles = {
 };
 
 var sheets = {};
-
-function populate_sheet_from_array_of_arrays(sheet, array) {
-	for (var i=0; i<array.length; i++){
-		var row = array[i];
-		for (var j=0; j<row.length; j++){
-			var cell = row[j];
-			cellProps = {
-				'set': cell.value,
-			};
-			if (typeof(cell) !== 'object'){
-				cellProps.set = cell;
-			}
-			else{
-				if (cell.style){
-					for (var prop in cell.style){
-						if (cell.style.hasOwnProperty(prop)){
-							cellProps[prop] = cell.style[prop];
-						}
-					}
-				}
-			}
-			if (cellProps.set !== undefined && cellProps.set !== "" ){
-				//the column/rows is switched from what you might think, j (column) goes first
-				sheet.set(j + 1, i + 1, cellProps);
-			}
-			//we do not set undefined values
-		}
-	}
-	return sheet;
-}
-
-function getDimensionsForNewSheet(array){
-	var rows = array.length;
-	var columns = 1;
-	for (var i=0; i<array.length; i++){
-		var row = array[i];
-		var rowLength = row.length;
-		if (rowLength > columns){columns = rowLength;}
-	}
-	return {'rows':rows, 'columns':columns};
-}
-
-function makeNewSheet(workbook, array, name){
-	dimensions = getDimensionsForNewSheet(array);
-	console.log(name + " " + JSON.stringify(dimensions));
-	var newSheet = workbook.createSheet(name, dimensions.columns, dimensions.rows);
-	setReasonableColumnWidths(dimensions, newSheet);
-	sheets[name] = {sheet:newSheet, dimensions:dimensions};
-	return newSheet;
-}
-
-function applyStylesToTheWholeSheet(sheetObj, styleObj){
-	let cols = sheetObj.dimensions.columns;
-	let rows = sheetObj.dimensions.columns;
-	let sheet = sheetObj.sheet;
-	for (var col=1; col<=cols; col++){
-		for (var row=1; row<=rows; row++){
-			if (styleObj.hasOwnProperty("font")){
-				sheet.font(col, row, styleObj.font);
-			}
-			if (styleObj.hasOwnProperty("border")){
-				sheet.border(col, row, styleObj.font);
-			}
-			if (styleObj.hasOwnProperty("fill")){
-				sheet.fill(col, row, styleObj.font);
-			}
-		}
-	}
-}
-
-function setReasonableColumnWidths(dimensions, worksheet){
-	//by default, the column width will be only 8.43, or 64 pixels.
-	//this is pretty miserable to work with
-	//a more reasonable value is a width of 20
-	//with the first column in a file always being shorter, at 15
-	setColumnWidths(dimensions, worksheet, 20, 15);
-}
-
-function setColumnWidths (dimensions, worksheet, defaultWidth, firstWidth){
-	for (var i=0; i<dimensions.columns; i++){
-		if (i === 0 && firstWidth >= 0){
-			worksheet.width(i+1, firstWidth);
-		}
-		else{
-			worksheet.width(i+1, defaultWidth);
-		}
-	}
-}
-
-function setRowHeights (dimensions, worksheet, defaultHeight, firstHeight){
-	for (var i=0; i<dimensions.rows; i++){
-		if (i === 0 && firstHeight >= 0){
-			worksheet.height(i+1, firstHeight);
-		}
-		else{
-			worksheet.height(i+1, defaultHeight);
-		}
-	}
-}
-
-function setBorder(sheet, style, startLocation, direction){
-	if (Array.isArray(startLocation)){
-		//do some overload detection - if an array with two elements exists
-		if (startLocation.length == 2){
-			// then it is [x,y] and we convert to a property
-			var x = startLocation[0];
-			var y = startLocation[1];
-			startLocation = {column:y, row:x};
-		}
-		else{
-			throw ("startLocation dimensions are wrong");
-		}
-	}
-	var column = startLocation.column;
-	var row = startLocation.row;
-	//direction gives us up or down, and length. For example, {long:5}
-	if (typeof(direction) === 'number'){
-		//we do some overloading, if direction is a number we just assume length
-		direction = {'long':direction};
-	}
-	if (direction.hasOwnProperty('long')){
-		var length = direction.long - 1;
-		for (let i=column; i<length+column; i++){
-			sheet.border(i,row,style);
-		}
-	}
-	else {if (direction.hasOwnProperty('tall')){
-		var height = direction.height - 1;
-		for (let i=row; i<height+row; i++){
-			sheet.border(row,i,style);
-		}
-	}}
-}
 
 function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 	var timeGeneratedAt = new Date();
@@ -183,15 +50,14 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 		}
 	}
 	
-	var sheetToPopulate = makeNewSheet(wb, array, "Summary");
-	var ws = populate_sheet_from_array_of_arrays(sheetToPopulate, array);
-	fileSummaryStyling(sheets["Summary"]);
-	return ws;
+	var sheet = excelHelpers.makeNewSheet(wb, array, "Summary", true);
+	console.log(sheet);
+	fileSummaryStyling(sheet);
+	return sheet;
 }
 
-function fileSummaryStyling(worksheetObj){
-	applyStylesToTheWholeSheet(worksheetObj, styles['grey-navy']);
-	let ws = worksheetObj.sheet;
+function fileSummaryStyling(ws){
+	excelHelpers.applyStylesToTheWholeSheet(ws, styles['grey-navy']);
 	ws.width(1, 38); //set the first column to be wider
 	ws.width(2, 30);
 	ws.width(3, 30);
@@ -199,20 +65,20 @@ function fileSummaryStyling(worksheetObj){
 	ws.height(1,27); //the first row should also be taller
 	ws.merge({col:1, row:1},{col:5, row:1}); //be a merged cell
 	//and have a border
-	setBorder(ws, {bottom:'thin'}, [1,1], 5);
+	excelHelpers.setBorder(ws, {bottom:'thin'}, [1,1], 5);
 }
 
 var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook){
 	var outputArray = [];
 	var firstRow = [[]];
-	for (var i=0; i<report_suites.length; i++){
+	for (let i=0; i<report_suites.length; i++){
 		firstRow.push({'value':report_suites[i].rsid, 'style':{font:{bold:'true'}, border:{bottom:'medium'}}});
 	}
 	outputArray.push(firstRow);
-	var allKeys = []; //create a global list of keys for comparision
+	var allKeys = []; //create a global list of keys for comparison
 	for (let i=0; i<report_suites.length; i++){
 		allKeys = union(allKeys, (keys(inputNVP[report_suites[i].rsid])) );
-		console.log(allKeys);
+		console.info(allKeys);
 	}
 	for (let i=0; i<allKeys.length; i++){
 		var key = allKeys[i];
@@ -235,8 +101,8 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 		}
 		outputArray.push(row);
 	}
-	var sheetToPopulate1 = makeNewSheet(workbook, outputArray, slotName);
-	var ws2 = populate_sheet_from_array_of_arrays(sheetToPopulate1, outputArray);
+	var sheetToPopulate1 = excelHelpers.makeNewSheet(workbook, outputArray, slotName);
+	excelHelpers.populate_sheet_from_array_of_arrays(sheetToPopulate1, outputArray);
 };
 
 var generateSummaryForReportSuite = function(report_suite, evars, props, events, workbook){
@@ -245,15 +111,15 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 	array.push(columns);
 	var allVariables = [props, evars, events];
 	var slotNames = ["props", "evars", "events"];
-	for (var i=0; i<allVariables.length; i++){
+	for (let i=0; i<allVariables.length; i++){
 		var slotName = slotNames[i];
 		var vars = allVariables[i][report_suite];
 		var allKeys = keys(vars);
-		for (var j=0; j<allKeys.length; j++){
+		for (let j=0; j<allKeys.length; j++){
 			var key = allKeys[j];
 			var row = [];
 			var varOfInterest = vars[key];
-			for (var k=0; k<columns.length; k++){
+			for (let k=0; k<columns.length; k++){
 				var column = columns[k];
 				var obj = {};
 				if (column in varOfInterest){
@@ -274,13 +140,13 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 		}
 	}
 	
-	var s = makeNewSheet(workbook, array, report_suite);
-	var ws1 = populate_sheet_from_array_of_arrays(s, array);
+	var s = excelHelpers.makeNewSheet(workbook, array, report_suite);
+	excelHelpers.populate_sheet_from_array_of_arrays(s, array);
 };
 
 function mapToNameValuePairs(array, nameofVarSlot){
 	var rsid_mapping = {};
-	for (var i=0; i<array.length; i++){
+	for (let i=0; i<array.length; i++){
 		var reportSuiteInfo = array[i];
 		var rsid = reportSuiteInfo.rsid;
 		var vars = reportSuiteInfo[nameofVarSlot];
@@ -296,8 +162,6 @@ function mapToNameValuePairs(array, nameofVarSlot){
 }
 
 function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray, propArray, eventArray, fileName, callback) {
-	//var workbook = excelbuilder.createWorkbook();
-	//wrokbook.fname = fileName;
 	var workbook = excelbuilder.createWorkbook("./", fileName);
 	console.log("creating a summary/export sheet");
 	let summarySheet = createSummarySheet(workbook, report_suites, allAvailableReportSuites);
@@ -312,12 +176,12 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	createOverviewOfSlot(report_suites, events, "events", workbook);
 	
 	console.log("creating tabs for each report suite");
-	for (var i=0; i<report_suites.length; i++){
+	for (let i=0; i<report_suites.length; i++){
 		var rs = report_suites[i];
 		generateSummaryForReportSuite(rs.rsid, evars, props, events, workbook);
 	}
 	
-	totalSheetsCreated = 1 + 3 + report_suites.length;
+	let totalSheetsCreated = 1 + 3 + report_suites.length;
 	summarySheet.set(1, 6, "This spreadsheet has " + totalSheetsCreated + " sheets.");
 	
 	workbook.generate(function(err, JSZip){
@@ -331,4 +195,12 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	});
 }
 
-module.exports.exportSiteCatToExcel = exportSiteCatToExcel;
+module.exports = {
+	exportSiteCatToExcel,
+	excelHelpers,
+	_createSummarySheet : createSummarySheet,
+	_fileSummaryStyling : fileSummaryStyling,
+	_createOverviewOfSlot : createOverviewOfSlot,
+	_generateSummaryForReportSuite : generateSummaryForReportSuite,
+	_mapToNameValuePairs : mapToNameValuePairs,
+};

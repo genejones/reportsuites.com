@@ -1,0 +1,8 @@
+language: node_js
+node_js:
+  - "lts/*"
+install:
+  - npm install
+  - npm build
+script: npm run coverage
+after_success: 'npm run coveralls'
