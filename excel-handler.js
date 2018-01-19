@@ -50,15 +50,14 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 		}
 	}
 	
-	var sheetToPopulate = excelHelpers.makeNewSheet(wb, array, "Summary");
-	var ws = excelHelpers.populate_sheet_from_array_of_arrays(sheetToPopulate, array);
-	fileSummaryStyling(sheets.Summary);
-	return ws;
+	var sheet = excelHelpers.makeNewSheet(wb, array, "Summary", true);
+	console.log(sheet);
+	fileSummaryStyling(sheet);
+	return sheet;
 }
 
-function fileSummaryStyling(worksheetObj){
-	excelHelpers.applyStylesToTheWholeSheet(worksheetObj, styles['grey-navy']);
-	let ws = worksheetObj.sheet;
+function fileSummaryStyling(ws){
+	excelHelpers.applyStylesToTheWholeSheet(ws, styles['grey-navy']);
 	ws.width(1, 38); //set the first column to be wider
 	ws.width(2, 30);
 	ws.width(3, 30);
@@ -79,7 +78,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 	var allKeys = []; //create a global list of keys for comparison
 	for (let i=0; i<report_suites.length; i++){
 		allKeys = union(allKeys, (keys(inputNVP[report_suites[i].rsid])) );
-		console.log(allKeys);
+		console.info(allKeys);
 	}
 	for (let i=0; i<allKeys.length; i++){
 		var key = allKeys[i];

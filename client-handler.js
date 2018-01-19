@@ -19,6 +19,9 @@ omnibus.request = request;
 omnibus.excel = excel;
 window.omnibus = omnibus;
 
+console.log("Welcome to this site. I hope you find it useful. If you do, I'm currently looking for work.\r\nEmail me at iam@genejon.es with any opportunities");
+console.log("Please also visit the Github for this page if you can think of anyway to improve it. https://github.com/genejones/reportsuites.com");
+
 var processInitialOptions = function () {
     window.fileName = jQuery('input#filename').val() + '.xlsx';
     window.username = jQuery('input#adobe-username').val();
@@ -33,7 +36,7 @@ jQuery('#action-initial').click(processInitialOptions);
 var getNewAuthToken = function () {
     var token = wsse({ username: window.username, password: window.pass });
     currentTokenWSSE = token.getWSSEHeader({ nonceBase64: true });
-    console.debug(currentTokenWSSE);
+    console.info(currentTokenWSSE);
 };
 var getHeaders = function () {
     getNewAuthToken();
@@ -105,8 +108,8 @@ var handleUserSelectionOfRSID = function (event) {
         }
     }
     window.adobe_vars.selected_report_suites = window.selected_report_suites;
-    formData = constructRequestBodyRSID(listOfSelectedRSID);
-    console.debug(formData);
+    let formData = constructRequestBodyRSID(listOfSelectedRSID);
+    console.info(formData);
     //update the ui
     displayProgressBar();
     getListOfEvars(formData);
@@ -161,7 +164,7 @@ var determineAnalyticsInformation = function (adobeVar) {
         'rsSelected': analytics.selectedReportSuites
     });
     //GA may use the Company/User unique hash as an user identifier in the future
-    console.debug(report_suites);
+    console.info(report_suites);
 };
 var getListOfEvars = function (form) {
     displayProgress(15, "Fetching evars");
@@ -174,7 +177,7 @@ var getListOfEvars = function (form) {
         if (!err) {
             var evarsRaw = body;
             window.adobe_vars.evars = JSON.parse(evarsRaw);
-            console.debug("succesfully got eVars");
+            console.info("succesfully got eVars");
             getListOfProps(form);
         }
         else {
@@ -196,7 +199,7 @@ var getListOfProps = function (form) {
         if (!err) {
             var propsRaw = body;
             window.adobe_vars.props = JSON.parse(propsRaw);
-            console.debug("successfully got props");
+            console.info("successfully got props");
             getListOfEvents(form);
         }
         else {
@@ -208,11 +211,11 @@ var getListOfProps = function (form) {
 };
 var handleExcelSuccess = function (input) {
     if (input === true) {
-        displayProgress(100, "Excel export complete");
+        displayProgress(100, "Excel export complete. Reload page to export again.");
         window.dataLayer.push({ 'event': 'export-complete', 'fileSize': window.analytics.fileSize });
         jQuery('#progress-view div').removeClass("progress-bar-info progress-bar-striped active");
         jQuery('#progress-view div').addClass("progress-bar-success");
-        jQuery('.jumbotron .display-3').text("All done");
+        jQuery('.jumbotron .display-5').text("All done");
     }
     else {
         console.error(input);

@@ -62,3 +62,4 @@ adobe-export.js
 
 #ignore jest test stuff
 jest_0/
+assets/js/essentials.js

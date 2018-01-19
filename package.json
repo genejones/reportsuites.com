@@ -4,7 +4,7 @@
   "description": "A website which creates excel files with all Adobe reportsuite configuration options",
   "main": "client-handler.js",
   "dependencies": {
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.0.0-alpha.6",
     "browser-request": "^0.3.3",
     "browserify": "^14.4.0",
     "file-saver": "^1.3.3",
@@ -12,7 +12,6 @@
     "hbsfy": "^2.8.1",
     "jquery": "^3.2.1",
     "jszip": "^3.1.3",
-    "keen-tracking": "^1.4.0",
     "lodash": "^4.17.4",
     "pbkdf2": "^3.0.14",
     "wsse": "^2.4.0",
@@ -27,7 +26,7 @@
   },
   "scripts": {
     "coverage": "jest --coverage",
-	"coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "jest",
     "build": "browserify client-handler.js -o adobe-export.js",
     "watch": "watchify -t hbsfy -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] client-handler.js -o adobe-export.js -v",
@@ -69,7 +68,7 @@
       "!grader.js",
       "!essentials-setup.js",
       "!adobe-api-helpers.js",
-	  "!adobe-export.js"
+      "!adobe-export.js"
     ]
   },
   "browserify": {

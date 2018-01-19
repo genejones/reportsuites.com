@@ -1,26 +1,9 @@
 /* Space out content a bit */
 body {
-  padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
+  display:flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
-
-/*
-h1 {
-	font-family: 'Allerta', Helvetica, Arial, sans-serif;
-	font-size: 50px!important;
-	line-height: 55px!important;
-}
-
-h3 {
-	font-family: 'Allerta', Helvetica, Arial, sans-serif;
-}
- 
-p {
-	font-family: 'Crimson Text', Georgia, Times, serif;
-	font-size: 16px;
-	line-height: 25px;
-}
-*/
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 .header,
@@ -40,23 +23,27 @@ form #rsid-selection {
 	float: left;
 }
 
+.content-container{
+	flex: 1;
+	padding-bottom: 1rem;
+}
+
 /* Custom page header */
 .header {
   padding-bottom: 1rem;
   border-bottom: .05rem solid #e5e5e5;
 }
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 3rem;
-}
 
 /* Custom page footer */
 .footer {
-  padding-top: 1.5rem;
-  color: #777;
-  border-top: .05rem solid #e5e5e5;
+  padding-top: 0.2rem;
+  color: #e9ecef;
+  background-color: #666;
+  border-color: #666;
+}
+
+.footer a, .footer strong {
+  color: #e5e5e5;
 }
 
 /* Customize container */
