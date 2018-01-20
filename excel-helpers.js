@@ -70,10 +70,10 @@ function applyStylesToTheWholeSheet(sheetObj, styleObj){
 				sheet.font(col, row, styleObj.font);
 			}
 			if (styleObj.hasOwnProperty("border")){
-				sheet.border(col, row, styleObj.font);
+				sheet.border(col, row, styleObj.border);
 			}
 			if (styleObj.hasOwnProperty("fill")){
-				sheet.fill(col, row, styleObj.font);
+				sheet.fill(col, row, styleObj.fill);
 			}
 		}
 	}

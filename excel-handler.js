@@ -101,8 +101,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 		}
 		outputArray.push(row);
 	}
-	var sheetToPopulate1 = excelHelpers.makeNewSheet(workbook, outputArray, slotName);
-	excelHelpers.populate_sheet_from_array_of_arrays(sheetToPopulate1, outputArray);
+	let ws = excelHelpers.makeNewSheet(workbook, outputArray, slotName, true);
 };
 
 var generateSummaryForReportSuite = function(report_suite, evars, props, events, workbook){

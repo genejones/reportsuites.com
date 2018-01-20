@@ -1,6 +1,6 @@
 {
   "name": "reportsuites.com",
-  "version": "0.7.5",
+  "version": "0.9.7",
   "description": "A website which creates excel files with all Adobe reportsuite configuration options",
   "main": "client-handler.js",
   "dependencies": {
@@ -10,6 +10,7 @@
     "file-saver": "^1.3.3",
     "handlebars": "^4.0.10",
     "hbsfy": "^2.8.1",
+    "jest-handlebars": "^1.0.1",
     "jquery": "^3.2.1",
     "jszip": "^3.1.3",
     "lodash": "^4.17.4",
@@ -50,15 +51,15 @@
   },
   "license": "Apache-2.0",
   "jest": {
-    "modulePathIgnorePatterns": [
-      ".handlebars"
-    ],
     "moduleNameMapper": {
-      "progress-display.handlebars$": "<rootDir>/__mocks__/progress-display.js",
-      "select_rsid.handlebars$": "<rootDir>/__mocks__/select_rsid.js"
+      "browser-request": "<rootDir>/__mocks__/request.js"
+    },
+    "transform": {
+      "\\.handlebars$": "jest-handlebars"
     },
     "setupFiles": [
-      "<rootDir>/__mocks__/jquery.js"
+      "<rootDir>/__mocks__/jquery.js",
+      "<rootDir>/__mocks__/wsse-creds.js"
     ],
     "collectCoverageFrom": [
       "*.js",

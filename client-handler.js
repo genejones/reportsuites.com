@@ -19,6 +19,8 @@ omnibus.request = request;
 omnibus.excel = excel;
 window.omnibus = omnibus;
 
+var front_end_extras = require('./front-end-extras.js');
+
 console.log("Welcome to this site. I hope you find it useful. If you do, I'm currently looking for work.\r\nEmail me at iam@genejon.es with any opportunities");
 console.log("Please also visit the Github for this page if you can think of anyway to improve it. https://github.com/genejones/reportsuites.com");
 
@@ -30,14 +32,15 @@ var processInitialOptions = function () {
         'company': analytics.company,
         'user': analytics.user,
         'filename': window.fileName });
-    getListOfReportSuites();
+    getListOfReportSuites(handleReportSuiteFetch);
 };
 jQuery('#action-initial').click(processInitialOptions);
+
 var getNewAuthToken = function () {
     var token = wsse({ username: window.username, password: window.pass });
     currentTokenWSSE = token.getWSSEHeader({ nonceBase64: true });
-    console.info(currentTokenWSSE);
 };
+
 var getHeaders = function () {
     getNewAuthToken();
     return {
@@ -45,13 +48,20 @@ var getHeaders = function () {
         'X-WSSE': currentTokenWSSE
     };
 };
+
 var displayError = function (err) {
     console.log(err);
-    jQuery('.display-3').text("There was an error");
+    jQuery('.display-5').text("There was an error");
     if (err.hasOwnProperty("error_description")) {
         jQuery('.lead').text(err.error_description);
     }
 };
+
+function handleReportSuiteFetch(report_suites){
+	window.adobe_vars.report_suites = report_suites;
+	displayRsChoices(report_suites);
+}
+
 var getListOfReportSuites = function (callback) {
     var options = {
         headers: getHeaders(),
@@ -62,10 +72,8 @@ var getListOfReportSuites = function (callback) {
     };
     request(options, function (err, res, body) {
         if (!err) {
-            console.log(body);
             report_suites = body.report_suites;
-            window.adobe_vars.report_suites = report_suites;
-            displayRsChoices(report_suites);
+            callback(report_suites);
         }
         else {
             console.log(res.statusCode);
@@ -73,6 +81,7 @@ var getListOfReportSuites = function (callback) {
         }
     });
 };
+
 var displayRsChoices = function (report_suites) {
     jQuery('.display-3').text("Select Reportsuites");
     jQuery('.lead').text("Select which reportsuites will be exported");
@@ -81,18 +90,21 @@ var displayRsChoices = function (report_suites) {
     analytics.numberOfReportSuites = report_suites.length;
     jQuery('#rsid-select-action').click(handleUserSelectionOfRSID);
 };
+
 var displayProgressBar = function () {
     jQuery('#rsid-selection').remove();
     jQuery('.display-3').text("Working on it");
     jQuery('.lead').text("Your export is being created");
     jQuery('.jumbotron').append(progressDisplay({ progress: "20", msg: "Fetching eVars" }));
 };
+
 var displayProgress = function (progressPct, msg) {
     jQuery('#progress-view div.progress-bar').css("width", progressPct + "%");
     jQuery('#progress-view div.progress-bar').attr("aria-valuenow", progressPct);
     jQuery('#progress-view div.progress-bar').text(msg);
     jQuery('.lead').text(msg);
 };
+
 var handleUserSelectionOfRSID = function (event) {
     window.listOfSelectedRSID = new Array();
     var selected_rsid_dict = {};
@@ -109,12 +121,18 @@ var handleUserSelectionOfRSID = function (event) {
     }
     window.adobe_vars.selected_report_suites = window.selected_report_suites;
     let formData = constructRequestBodyRSID(listOfSelectedRSID);
-    console.info(formData);
+	if (!event){
+		//this isn't taking place on the client, but instead is a unit test
+		//decouple from fetching evars
+		return formData;
+	}
     //update the ui
     displayProgressBar();
-    getListOfEvars(formData);
+	displayProgress(15, "Fetching evars");
+    getListOfEvars(formData, handleEvars);
     return false;
 };
+
 var constructRequestBodyRSID = function (report_suites) {
     //posting this over AJAX makes things picky for some reason.
     //this function manually constructs the POST body to make Adobe happy
@@ -132,11 +150,13 @@ var constructRequestBodyRSID = function (report_suites) {
     stringList = stringList + ']}';
     return stringList;
 };
+
 var salt = "41C382B46D9AAB7CCC801A8E7C8F";
 function buf2hex(buffer) {
     //taken from https://stackoverflow.com/questions/40031688/javascript-arraybuffer-to-hex
     return Array.prototype.map.call(new Uint8Array(buffer), function (x) { return ('00' + x.toString(16)).slice(-2); }).join('');
 }
+
 var getHash = function (infoToHash) {
     //uses 5000 iterations, which is the same default Lastpass uses
     //a predetermined salt, and an export length of 30 bytes
@@ -144,6 +164,7 @@ var getHash = function (infoToHash) {
     var hashBuffer = crypto.pbkdf2Sync(infoToHash, salt, 5000, 32, 'sha256');
     return buf2hex(hashBuffer);
 };
+
 var determineAnalyticsInformation = function (adobeVar) {
     var report_suites = adobeVar.report_suites;
     var evars = adobeVar.evars;
@@ -166,8 +187,14 @@ var determineAnalyticsInformation = function (adobeVar) {
     //GA may use the Company/User unique hash as an user identifier in the future
     console.info(report_suites);
 };
-var getListOfEvars = function (form) {
-    displayProgress(15, "Fetching evars");
+
+function handleEvars(evars){
+	window.adobe_vars.evars = JSON.parse(evarsRaw);
+	console.info("successfully got eVars");
+	getListOfProps(form, handleProps);
+}
+
+var getListOfEvars = function (form, callback) {
     request({
         headers: getHeaders(),
         uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvars',
@@ -176,9 +203,7 @@ var getListOfEvars = function (form) {
     }, function (err, res, body) {
         if (!err) {
             var evarsRaw = body;
-            window.adobe_vars.evars = JSON.parse(evarsRaw);
-            console.info("succesfully got eVars");
-            getListOfProps(form);
+            callback( JSON.parse(evarsRaw) );
         }
         else {
             console.log(res.statusCode);
@@ -187,7 +212,15 @@ var getListOfEvars = function (form) {
         }
     });
 };
-var getListOfProps = function (form) {
+
+function handleProps(props){
+	window.adobe_vars.props = props;
+	console.info("successfully got props");
+	displayProgress(40, "Fetching events");
+	getListOfEvents(form);
+}
+
+var getListOfProps = function (form, callback) {
     displayProgress(25, "Fetching props");
     getNewAuthToken();
     request({
@@ -198,9 +231,8 @@ var getListOfProps = function (form) {
     }, function (err, res, body) {
         if (!err) {
             var propsRaw = body;
-            window.adobe_vars.props = JSON.parse(propsRaw);
-            console.info("successfully got props");
-            getListOfEvents(form);
+            let props = JSON.parse(propsRaw);
+			callback(props);
         }
         else {
             console.log(res.statusCode);
@@ -209,6 +241,7 @@ var getListOfProps = function (form) {
         }
     });
 };
+
 var handleExcelSuccess = function (input) {
     if (input === true) {
         displayProgress(100, "Excel export complete. Reload page to export again.");
@@ -221,8 +254,17 @@ var handleExcelSuccess = function (input) {
         console.error(input);
     }
 };
-var getListOfEvents = function (form) {
-    displayProgress(40, "Fetching events");
+
+function handleEvents() {
+	console.log("succesfully got events");
+	window.adobe_vars.events = events;
+	displayProgress(65, "Creating hashes");
+	determineAnalyticsInformation(window.adobe_vars);
+	displayProgress(85, "Building spreadsheet");
+	excel.exportSiteCatToExcel(window.selected_report_suites, window.report_suites, window.adobe_vars.evars, window.adobe_vars.props, window.adobe_vars.events, window.fileName, handleExcelSuccess);
+}
+
+var getListOfEvents = function (form, callback) {
     request({
         headers: getHeaders(),
         uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvents',
@@ -231,14 +273,9 @@ var getListOfEvents = function (form) {
     }, function (err, res, body) {
         if (!err) {
             var eventsRaw = body;
-            console.log("succesfully got events");
-            window.adobe_vars.events = JSON.parse(eventsRaw);
-            console.log(window.selected_report_suites);
-            displayProgress(65, "Creating hashes");
-            determineAnalyticsInformation(window.adobe_vars);
-            displayProgress(85, "Building spreadsheet");
-            excel.exportSiteCatToExcel(window.selected_report_suites, window.report_suites, window.adobe_vars.evars, window.adobe_vars.props, window.adobe_vars.events, window.fileName, handleExcelSuccess);
-        }
+			let events = JSON.parse(eventsRaw);
+			callback(events)
+		}
         else {
             console.log(res.statusCode);
             displayError(err);
@@ -246,60 +283,19 @@ var getListOfEvents = function (form) {
         }
     });
 };
-var enablePaginationButtons = function (element) {
-    if (element.data("nextStep")) {
-        jQuery("#adobe-instructions-modal > li.next").removeClass("disabled");
-    }
-    else {
-        jQuery("#adobe-instructions-modal > li.prev").addClass("disabled");
-    }
-    if (element.data("prevStep")) {
-        jQuery("#adobe-instructions-modal > li.prev").removeClass("disabled");
-    }
-    else {
-        jQuery("#adobe-instructions-modal > li.prev").addClass("disabled");
-    }
-};
-jQuery("#adobe-instructions-modal li.next a").click(function () {
-    var elem = jQuery('*[data-current-instruction="true"');
-    if (elem.data("next-step")) {
-        var nextElem = jQuery("#" + elem.data("next-step"));
-        elem.hide("fast");
-        delete elem[0].dataset.currentInstruction;
-        console.log(nextElem);
-        nextElem.show("slow");
-        nextElem[0].dataset.currentInstruction = "true";
-        //set up the next/prev steps
-        enablePaginationButtons(nextElem);
-    }
-});
-jQuery("#adobe-instructions-modal li.previous a").click(function () {
-    var elem = jQuery('*[data-current-instruction="true"');
-    if (elem.data("prev-step")) {
-        var prevElem = jQuery("#" + elem.data("prev-step"));
-        elem.hide("fast");
-        delete elem[0].dataset.currentInstruction;
-        prevElem.show("fast");
-        nextElem[0].dataset.currentInstruction = "true";
-        //set up the next/prev steps
-        enablePaginationButtons(prevElem);
-    }
-});
-$('#adobe-instructions-modal').on('shown.bs.modal', function () {
-    console.log("modal open");
-    var imgs = $('#adobe-instructions-modal img');
-    //change src from the transparent GIF to the actual source on modal open
-    for (var i = 0; i < imgs.length; i++) {
-        if (imgs[i].getAttribute('data-src')) {
-            imgs[i].setAttribute('src', imgs[i].getAttribute('data-src'));
-        }
-    }
-});
+
 var exports = module.exports = {};
 exports.getListOfReportSuites = getListOfReportSuites;
+exports.getListOfEvars = getListOfEvars;
+exports.getListOfProps = getListOfProps;
+exports.getListOfEvents = getListOfEvents;
 window.getListOfReportSuites = getListOfReportSuites;
 exports.processInitialOptions = processInitialOptions;
 exports.handleUserSelectionOfRSID = handleUserSelectionOfRSID;
 exports.displayProgressBar = displayProgressBar;
 exports.displayProgress = displayProgress;
 exports.displayError = displayError;
+exports._constructRequestBodyRSID = constructRequestBodyRSID;
+exports._getNewAuthToken = getNewAuthToken;
+exports._getHash = getHash;
+exports._currentTokenWSSE = function(){return currentTokenWSSE;};
