@@ -1,13 +1,14 @@
 "use strict";
 exports.__esModule = true;
-var wsse = require('wsse');
-var request = require('browser-request');
+
+var adobe_api = require('./adobe-api-helpers.js');
 var excel = require('./excel-handler.js');
 var handlebars = require('handlebars/runtime')["default"];
 var RSID_selection_template = require('./select_rsid.handlebars');
 var progressDisplay = require('./progress-display.handlebars');
 var crypto = require('pbkdf2');
-var currentTokenWSSE = '';
+var front_end_extras = require('./front-end-extras.js');
+
 window.report_suites = {};
 window.selected_report_suites = [];
 window.adobe_vars = {};
@@ -15,41 +16,29 @@ var analytics = { 'rs': {} };
 window.analytics = analytics;
 
 var omnibus = window.omnibus || {};
-omnibus.request = request;
 omnibus.excel = excel;
+omnibus.adobe = adobe_api;
+omnibus.request = adobe_api.request;
+omnibus.frontend = front_end_extras;
 window.omnibus = omnibus;
 
-var front_end_extras = require('./front-end-extras.js');
-
-console.log("Welcome to this site. I hope you find it useful. If you do, I'm currently looking for work.\r\nEmail me at iam@genejon.es with any opportunities");
+console.log("Welcome to this site. I hope you find it useful.");
 console.log("Please also visit the Github for this page if you can think of anyway to improve it. https://github.com/genejones/reportsuites.com");
 
-var processInitialOptions = function () {
+function processInitialOptions () {
     window.fileName = jQuery('input#filename').val() + '.xlsx';
     window.username = jQuery('input#adobe-username').val();
     window.pass = jQuery('input#adobe-secret').val();
+	adobe_api.setCredentials(username, pass);
     window.dataLayer.push({ 'event': 'export-complete',
         'company': analytics.company,
         'user': analytics.user,
         'filename': window.fileName });
-    getListOfReportSuites(handleReportSuiteFetch);
+    adobe_api.getListOfReportSuites(handleReportSuiteFetch);
 };
 jQuery('#action-initial').click(processInitialOptions);
 
-var getNewAuthToken = function () {
-    var token = wsse({ username: window.username, password: window.pass });
-    currentTokenWSSE = token.getWSSEHeader({ nonceBase64: true });
-};
-
-var getHeaders = function () {
-    getNewAuthToken();
-    return {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'X-WSSE': currentTokenWSSE
-    };
-};
-
-var displayError = function (err) {
+function displayError (err) {
     console.log(err);
     jQuery('.display-5').text("There was an error");
     if (err.hasOwnProperty("error_description")) {
@@ -62,27 +51,7 @@ function handleReportSuiteFetch(report_suites){
 	displayRsChoices(report_suites);
 }
 
-var getListOfReportSuites = function (callback) {
-    var options = {
-        headers: getHeaders(),
-        uri: 'https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites',
-        body: "search=&types=standard",
-        method: 'POST',
-        json: true
-    };
-    request(options, function (err, res, body) {
-        if (!err) {
-            report_suites = body.report_suites;
-            callback(report_suites);
-        }
-        else {
-            console.log(res.statusCode);
-            displayError(err);
-        }
-    });
-};
-
-var displayRsChoices = function (report_suites) {
+function displayRsChoices (report_suites) {
     jQuery('.display-3').text("Select Reportsuites");
     jQuery('.lead').text("Select which reportsuites will be exported");
     jQuery('#adobe-action').remove();
@@ -91,21 +60,21 @@ var displayRsChoices = function (report_suites) {
     jQuery('#rsid-select-action').click(handleUserSelectionOfRSID);
 };
 
-var displayProgressBar = function () {
+function displayProgressBar () {
     jQuery('#rsid-selection').remove();
     jQuery('.display-3').text("Working on it");
     jQuery('.lead').text("Your export is being created");
     jQuery('.jumbotron').append(progressDisplay({ progress: "20", msg: "Fetching eVars" }));
 };
 
-var displayProgress = function (progressPct, msg) {
+function displayProgress (progressPct, msg) {
     jQuery('#progress-view div.progress-bar').css("width", progressPct + "%");
     jQuery('#progress-view div.progress-bar').attr("aria-valuenow", progressPct);
     jQuery('#progress-view div.progress-bar').text(msg);
     jQuery('.lead').text(msg);
 };
 
-var handleUserSelectionOfRSID = function (event) {
+function handleUserSelectionOfRSID (event) {
     window.listOfSelectedRSID = new Array();
     var selected_rsid_dict = {};
     jQuery.each(jQuery('input[type="checkbox"]:checked'), function (key, value) {
@@ -120,7 +89,7 @@ var handleUserSelectionOfRSID = function (event) {
         }
     }
     window.adobe_vars.selected_report_suites = window.selected_report_suites;
-    let formData = constructRequestBodyRSID(listOfSelectedRSID);
+    let formData = adobe_api.constructRequestBodyRSID(listOfSelectedRSID);
 	if (!event){
 		//this isn't taking place on the client, but instead is a unit test
 		//decouple from fetching evars
@@ -129,26 +98,8 @@ var handleUserSelectionOfRSID = function (event) {
     //update the ui
     displayProgressBar();
 	displayProgress(15, "Fetching evars");
-    getListOfEvars(formData, handleEvars);
+    adobe_api.getListOfEvars(formData, handleEvars);
     return false;
-};
-
-var constructRequestBodyRSID = function (report_suites) {
-    //posting this over AJAX makes things picky for some reason.
-    //this function manually constructs the POST body to make Adobe happy
-    //because all my earlier attempts to use querystring or other methods failed.
-    window.rsid_list = {
-        "rsid_list": []
-    };
-    var stringList = '{"rsid_list":[';
-    for (var i = 0; i < report_suites.length; i++) {
-        stringList = stringList + '"' + report_suites[i] + '"';
-        if (i < report_suites.length - 1) {
-            stringList = stringList + ",";
-        }
-    }
-    stringList = stringList + ']}';
-    return stringList;
 };
 
 var salt = "41C382B46D9AAB7CCC801A8E7C8F";
@@ -157,7 +108,7 @@ function buf2hex(buffer) {
     return Array.prototype.map.call(new Uint8Array(buffer), function (x) { return ('00' + x.toString(16)).slice(-2); }).join('');
 }
 
-var getHash = function (infoToHash) {
+function getHash (infoToHash) {
     //uses 5000 iterations, which is the same default Lastpass uses
     //a predetermined salt, and an export length of 30 bytes
     //use the digest of SHA256, which is a bit faster than SHA512 and works better in JS
@@ -165,7 +116,7 @@ var getHash = function (infoToHash) {
     return buf2hex(hashBuffer);
 };
 
-var determineAnalyticsInformation = function (adobeVar) {
+function determineAnalyticsInformation (adobeVar) {
     var report_suites = adobeVar.report_suites;
     var evars = adobeVar.evars;
     var props = adobeVar.props;
@@ -191,58 +142,18 @@ var determineAnalyticsInformation = function (adobeVar) {
 function handleEvars(evars){
 	window.adobe_vars.evars = JSON.parse(evarsRaw);
 	console.info("successfully got eVars");
-	getListOfProps(form, handleProps);
+	displayProgress(25, "Fetching props");
+	adobe_api.getListOfProps(form, handleProps);
 }
-
-var getListOfEvars = function (form, callback) {
-    request({
-        headers: getHeaders(),
-        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvars',
-        'body': form,
-        method: 'POST'
-    }, function (err, res, body) {
-        if (!err) {
-            var evarsRaw = body;
-            callback( JSON.parse(evarsRaw) );
-        }
-        else {
-            console.log(res.statusCode);
-            displayError(err);
-            console.log(body);
-        }
-    });
-};
 
 function handleProps(props){
 	window.adobe_vars.props = props;
 	console.info("successfully got props");
 	displayProgress(40, "Fetching events");
-	getListOfEvents(form);
+	adobe_api.getListOfEvents(form);
 }
 
-var getListOfProps = function (form, callback) {
-    displayProgress(25, "Fetching props");
-    getNewAuthToken();
-    request({
-        headers: getHeaders(),
-        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetProps',
-        body: form,
-        method: 'POST'
-    }, function (err, res, body) {
-        if (!err) {
-            var propsRaw = body;
-            let props = JSON.parse(propsRaw);
-			callback(props);
-        }
-        else {
-            console.log(res.statusCode);
-            displayError(err);
-            console.log(body);
-        }
-    });
-};
-
-var handleExcelSuccess = function (input) {
+function handleExcelSuccess (input) {
     if (input === true) {
         displayProgress(100, "Excel export complete. Reload page to export again.");
         window.dataLayer.push({ 'event': 'export-complete', 'fileSize': window.analytics.fileSize });
@@ -264,38 +175,10 @@ function handleEvents() {
 	excel.exportSiteCatToExcel(window.selected_report_suites, window.report_suites, window.adobe_vars.evars, window.adobe_vars.props, window.adobe_vars.events, window.fileName, handleExcelSuccess);
 }
 
-var getListOfEvents = function (form, callback) {
-    request({
-        headers: getHeaders(),
-        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvents',
-        body: form,
-        method: 'POST'
-    }, function (err, res, body) {
-        if (!err) {
-            var eventsRaw = body;
-			let events = JSON.parse(eventsRaw);
-			callback(events)
-		}
-        else {
-            console.log(res.statusCode);
-            displayError(err);
-            console.log(body);
-        }
-    });
-};
-
 var exports = module.exports = {};
-exports.getListOfReportSuites = getListOfReportSuites;
-exports.getListOfEvars = getListOfEvars;
-exports.getListOfProps = getListOfProps;
-exports.getListOfEvents = getListOfEvents;
-window.getListOfReportSuites = getListOfReportSuites;
 exports.processInitialOptions = processInitialOptions;
 exports.handleUserSelectionOfRSID = handleUserSelectionOfRSID;
 exports.displayProgressBar = displayProgressBar;
 exports.displayProgress = displayProgress;
 exports.displayError = displayError;
-exports._constructRequestBodyRSID = constructRequestBodyRSID;
-exports._getNewAuthToken = getNewAuthToken;
 exports._getHash = getHash;
-exports._currentTokenWSSE = function(){return currentTokenWSSE;};

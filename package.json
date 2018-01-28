@@ -68,7 +68,6 @@
       "!ecosystem.config.js",
       "!grader.js",
       "!essentials-setup.js",
-      "!adobe-api-helpers.js",
       "!adobe-export.js"
     ]
   },
