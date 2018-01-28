@@ -1,0 +1,19 @@
+# reportsuites.com
+# The humans responsible for this site
+
+/* TEAM */ 
+Your title: Gene Jones
+Site: genejon.es
+Twitter: @generjones 
+Location: Atlanta, GA
+
+
+/* THANKS */
+Protobi: https://protobi.com/
+Chuanyi: https://github.com/chuanyi/msexcel-builder
+
+/* SITE */
+Last update: 2018/01/27 
+Standards: HTML5, CSS3, ES6, NPM
+Components: GTM, jQuery, HandlebarsJS, pbkdf2, jszip, xmlbuilder, msexcel-builder                       
+Software: Browserify, Jest

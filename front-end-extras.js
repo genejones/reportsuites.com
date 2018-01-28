@@ -55,8 +55,8 @@ This is to lower the page loading time.
 We lazy load the correct URLs using an attribute called 'data-src'
 */
 function loadInstructionImages() {
-	if (window.omnibus.front.imagesLoaded !== true){
-		window.omnibus.front.imagesLoaded = true;
+	if (window.omnibus.frontend.imagesLoaded !== true){
+		window.omnibus.frontend.imagesLoaded = true;
 		dataLayer.push({'event': 'instructionModalOpen'});
 		var imgs = $('#adobe-instructions-modal img');
 		//change src from the transparent GIF to the actual source on modal open
