@@ -90,6 +90,7 @@ function handleUserSelectionOfRSID (event) {
     }
     window.adobe_vars.selected_report_suites = window.selected_report_suites;
     let formData = adobe_api.constructRequestBodyRSID(listOfSelectedRSID);
+	window.omnibus.adobe.formData = formData;
 	if (!event){
 		//this isn't taking place on the client, but instead is a unit test
 		//decouple from fetching evars
@@ -136,21 +137,20 @@ function determineAnalyticsInformation (adobeVar) {
         'rsSelected': analytics.selectedReportSuites
     });
     //GA may use the Company/User unique hash as an user identifier in the future
-    console.info(report_suites);
 };
 
-function handleEvars(evars){
-	window.adobe_vars.evars = JSON.parse(evarsRaw);
+function handleEvars(evars, formData){
+	window.adobe_vars.evars = evars;
 	console.info("successfully got eVars");
 	displayProgress(25, "Fetching props");
-	adobe_api.getListOfProps(form, handleProps);
+	adobe_api.getListOfProps(formData, handleProps);
 }
 
-function handleProps(props){
+function handleProps(props, formData){
 	window.adobe_vars.props = props;
 	console.info("successfully got props");
 	displayProgress(40, "Fetching events");
-	adobe_api.getListOfEvents(form);
+	adobe_api.getListOfEvents(formData, handleEvents);
 }
 
 function handleExcelSuccess (input) {
@@ -166,7 +166,7 @@ function handleExcelSuccess (input) {
     }
 };
 
-function handleEvents() {
+function handleEvents(events) {
 	console.log("succesfully got events");
 	window.adobe_vars.events = events;
 	displayProgress(65, "Creating hashes");

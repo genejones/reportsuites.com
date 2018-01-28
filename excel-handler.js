@@ -51,7 +51,6 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 	}
 	
 	var sheet = excelHelpers.makeNewSheet(wb, array, "Summary", true);
-	console.log(sheet);
 	fileSummaryStyling(sheet);
 	return sheet;
 }
@@ -78,7 +77,6 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 	var allKeys = []; //create a global list of keys for comparison
 	for (let i=0; i<report_suites.length; i++){
 		allKeys = union(allKeys, (keys(inputNVP[report_suites[i].rsid])) );
-		console.info(allKeys);
 	}
 	for (let i=0; i<allKeys.length; i++){
 		var key = allKeys[i];
@@ -202,4 +200,5 @@ module.exports = {
 	_createOverviewOfSlot : createOverviewOfSlot,
 	_generateSummaryForReportSuite : generateSummaryForReportSuite,
 	_mapToNameValuePairs : mapToNameValuePairs,
+	styles
 };

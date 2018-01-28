@@ -2,26 +2,6 @@ var currentTokenWSSE = '';
 var wsse = require('wsse');
 var request = require('browser-request');
 
-var constructRequestBodyRSID = function(report_suites){
-	//posting this over AJAX makes things picky for some reason.
-	//this function manually constructs the POST body to make Adobe happy
-	//because all my earlier attempts to use querystring or other methods failed.
-	window.rsid_list = {
-		"rsid_list":[
-		]
-	};
-	var stringList = '{"rsid_list":[';
-	for (var i=0;i<report_suites.length; i++){
-		stringList = stringList + '"' + report_suites[i] + '"';
-		if (i < report_suites.length -1){
-			stringList = stringList + ",";
-		}
-	}
-	
-	stringList = stringList + ']}';
-	return stringList;
-};
-
 let username = '';
 let password = '';
 function setCredentials (userInput, passInput){
@@ -95,7 +75,7 @@ function getListOfEvars (form, callback) {
         if (!err) {
             var evarsRaw = body;
             let evars = JSON.parse(evarsRaw);
-			callback(evars);
+			callback(evars, form);
         }
         else {
             console.log(res.statusCode);
@@ -116,7 +96,7 @@ function getListOfProps (form, callback) {
         if (!err) {
             var propsRaw = body;
             let props = JSON.parse(propsRaw);
-			callback(props);
+			callback(props, form);
         }
         else {
             console.log(res.statusCode);
@@ -136,7 +116,7 @@ function getListOfEvents (form, callback) {
         if (!err) {
             var eventsRaw = body;
 			let events = JSON.parse(eventsRaw);
-			callback(events)
+			callback(events, form)
 		}
         else {
             console.log(res.statusCode);
