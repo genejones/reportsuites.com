@@ -10,6 +10,7 @@ grader.s_code = function(url){
 //or just examine the s object rather than the code itself
 //still tells us all we need to know, and can be done trivially in Phantom
 //see https://github.com/cjdd3b/lambda-screenshot for an example
+//maybe possible to do with JSHINT on page, getting the s_code dynamically?
 };
 
 grader.processData = function(){

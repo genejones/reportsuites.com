@@ -1,3 +1,4 @@
+"use strict";
 var union = require('lodash/union');
 var keys = require('lodash/keys');
 var FileSaver = require('file-saver');
@@ -39,7 +40,7 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 		for(let i=0; i<allAvailableReportSuites.length; i++){
 			let isNotInSelectedSuites = true;
 			for (let j=0; j<report_suites.length; j++){
-				if (report_suites[j].rsid == allAvailableReportSuites[i].rsid){
+				if (report_suites[j].rsid === allAvailableReportSuites[i].rsid){
 					isNotInSelectedSuites = false;
 					break;
 				}
@@ -85,7 +86,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 			if (key in inputNVP[report_suites[j].rsid]) {
 				var varOfInterest = inputNVP[report_suites[j].rsid][key];
 				var obj = {"value":varOfInterest.name};
-				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!="disabled")){
+				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!=="disabled")){
 					obj.style = styles.active;
 				}
 				else{
@@ -125,7 +126,7 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 				else{
 					obj.value = 'N/A';
 				}
-				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!="disabled")){
+				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!=="disabled")){
 					obj.style = styles.active;
 				}
 				else{
@@ -182,7 +183,7 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	summarySheet.set(1, 6, "This spreadsheet has " + totalSheetsCreated + " sheets.");
 	
 	workbook.generate(function(err, JSZip){
-		if (err) return callback(err);
+		if (err) {return callback(err);}
 		
 		JSZip.generateAsync({type: "blob", mimeType: 'application/vnd.ms-excel;'}).then(function (blob) {
 			window.analytics.fileSize = blob.size;

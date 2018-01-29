@@ -1,3 +1,4 @@
+"use strict";
 var currentTokenWSSE = '';
 var wsse = require('wsse');
 var request = require('browser-request');
@@ -16,7 +17,7 @@ function getNewAuthToken ()  {
 	var token = wsse(getCredentials());
 	currentTokenWSSE = token.getWSSEHeader({ nonceBase64: true });
 	return currentTokenWSSE;
-};
+}
 
 function getHeaders (){
 	let currentTokenWSSE = getNewAuthToken();
@@ -24,7 +25,7 @@ function getHeaders (){
       'Content-Type': 'application/x-www-form-urlencoded',
 	  'X-WSSE': currentTokenWSSE
     };
-};
+}
 
 function constructRequestBodyRSID (report_suites) {
     //posting this over AJAX makes things picky for some reason.
@@ -42,7 +43,7 @@ function constructRequestBodyRSID (report_suites) {
     }
     stringList = stringList + ']}';
     return stringList;
-};
+}
 
 function getListOfReportSuites (callback) {
     var options = {
@@ -62,7 +63,7 @@ function getListOfReportSuites (callback) {
             displayError(err);
         }
     });
-};
+}
 
 function getListOfEvars (form, callback) {
     getNewAuthToken();
@@ -83,7 +84,7 @@ function getListOfEvars (form, callback) {
             console.log(body);
         }
     });
-};
+}
 
 function getListOfProps (form, callback) {
     getNewAuthToken();
@@ -104,7 +105,7 @@ function getListOfProps (form, callback) {
             console.log(body);
         }
     });
-};
+}
 
 function getListOfEvents (form, callback) {
     request({
@@ -116,7 +117,7 @@ function getListOfEvents (form, callback) {
         if (!err) {
             var eventsRaw = body;
 			let events = JSON.parse(eventsRaw);
-			callback(events, form)
+			callback(events, form);
 		}
         else {
             console.log(res.statusCode);
@@ -124,7 +125,7 @@ function getListOfEvents (form, callback) {
             console.log(body);
         }
     });
-};
+}
 
 var exports = module.exports = {
 	constructRequestBodyRSID,
@@ -136,5 +137,4 @@ var exports = module.exports = {
 	getListOfEvars,
 	getListOfProps,
 	_currentTokenWSSE : function(){return currentTokenWSSE;},
-	request
 };

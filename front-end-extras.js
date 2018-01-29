@@ -1,3 +1,5 @@
+"use strict";
+
 function enablePaginationButtons (element) {
     if (element.dataset.nextStep) {
         jQuery("#adobe-instructions-modal ul.pagination li.next.disabled").removeClass("disabled");
@@ -11,7 +13,7 @@ function enablePaginationButtons (element) {
     else {
         jQuery("#adobe-instructions-modal ul.pagination li.previous").addClass("disabled");
     }
-};
+}
 
 function advanceForwards(event = undefined) {
     let elem = document.querySelector('[data-current-instruction="true"]');
@@ -28,7 +30,7 @@ function advanceForwards(event = undefined) {
 	else{
 		console.log("no selected page");
 	}
-};
+}
 jQuery("#adobe-instructions-modal li.next a").click(advanceForwards);
 
 function advanceBackwards(event = undefined) {
@@ -46,7 +48,7 @@ function advanceBackwards(event = undefined) {
 	else{
 		console.log("no selected page");
 	}
-};
+}
 jQuery("#adobe-instructions-modal li.previous a").click(advanceBackwards);
 
 /*
@@ -58,7 +60,7 @@ function loadInstructionImages() {
 	if (window.omnibus.frontend.imagesLoaded !== true){
 		window.omnibus.frontend.imagesLoaded = true;
 		dataLayer.push({'event': 'instructionModalOpen'});
-		var imgs = $('#adobe-instructions-modal img');
+		var imgs = jQuery('#adobe-instructions-modal img');
 		//change src from the transparent GIF to the actual source on modal open
 		for (var i = 0; i < imgs.length; i++) {
 			if (imgs[i].getAttribute('data-src')) {
@@ -66,8 +68,8 @@ function loadInstructionImages() {
 			}
 		}
 	}
-};
-$('#adobe-instructions-modal').on('shown.bs.modal', loadInstructionImages);
+}
+jQuery('#adobe-instructions-modal').on('shown.bs.modal', loadInstructionImages);
 
 /*
 We need to cleanly 
