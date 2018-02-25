@@ -1,3 +1,4 @@
+"use strict";
 var union = require('lodash/union');
 var keys = require('lodash/keys');
 var FileSaver = require('file-saver');
@@ -39,7 +40,7 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 		for(let i=0; i<allAvailableReportSuites.length; i++){
 			let isNotInSelectedSuites = true;
 			for (let j=0; j<report_suites.length; j++){
-				if (report_suites[j].rsid == allAvailableReportSuites[i].rsid){
+				if (report_suites[j].rsid === allAvailableReportSuites[i].rsid){
 					isNotInSelectedSuites = false;
 					break;
 				}
@@ -51,7 +52,6 @@ function createSummarySheet(wb, report_suites, allAvailableReportSuites){
 	}
 	
 	var sheet = excelHelpers.makeNewSheet(wb, array, "Summary", true);
-	console.log(sheet);
 	fileSummaryStyling(sheet);
 	return sheet;
 }
@@ -78,7 +78,6 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 	var allKeys = []; //create a global list of keys for comparison
 	for (let i=0; i<report_suites.length; i++){
 		allKeys = union(allKeys, (keys(inputNVP[report_suites[i].rsid])) );
-		console.info(allKeys);
 	}
 	for (let i=0; i<allKeys.length; i++){
 		var key = allKeys[i];
@@ -87,7 +86,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 			if (key in inputNVP[report_suites[j].rsid]) {
 				var varOfInterest = inputNVP[report_suites[j].rsid][key];
 				var obj = {"value":varOfInterest.name};
-				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!="disabled")){
+				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!=="disabled")){
 					obj.style = styles.active;
 				}
 				else{
@@ -101,8 +100,7 @@ var createOverviewOfSlot = function(report_suites, inputNVP, slotName, workbook)
 		}
 		outputArray.push(row);
 	}
-	var sheetToPopulate1 = excelHelpers.makeNewSheet(workbook, outputArray, slotName);
-	excelHelpers.populate_sheet_from_array_of_arrays(sheetToPopulate1, outputArray);
+	let ws = excelHelpers.makeNewSheet(workbook, outputArray, slotName, true);
 };
 
 var generateSummaryForReportSuite = function(report_suite, evars, props, events, workbook){
@@ -128,7 +126,7 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 				else{
 					obj.value = 'N/A';
 				}
-				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!="disabled")){
+				if (varOfInterest.enabled || (slotName==="events" && varOfInterest.type!=="disabled")){
 					obj.style = styles.active;
 				}
 				else{
@@ -144,31 +142,10 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 	excelHelpers.populate_sheet_from_array_of_arrays(s, array);
 };
 
-function mapToNameValuePairs(array, nameofVarSlot){
-	var rsid_mapping = {};
-	for (let i=0; i<array.length; i++){
-		var reportSuiteInfo = array[i];
-		var rsid = reportSuiteInfo.rsid;
-		var vars = reportSuiteInfo[nameofVarSlot];
-		var nvp = {};
-		for (var j=0; j<vars.length; j++){
-			var presentVariable = vars[j];
-			nvp[presentVariable.id] = presentVariable;
-		}
-		rsid_mapping[rsid] = nvp;
-	}
-
-	return rsid_mapping;
-}
-
-function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray, propArray, eventArray, fileName, callback) {
+function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evars, props, events, fileName, callback) {
 	var workbook = excelbuilder.createWorkbook("./", fileName);
 	console.log("creating a summary/export sheet");
 	let summarySheet = createSummarySheet(workbook, report_suites, allAvailableReportSuites);
-	
-	let evars = mapToNameValuePairs(evarArray, 'evars');
-	let props = mapToNameValuePairs(propArray, 'props');
-	let events = mapToNameValuePairs(eventArray, 'events');
 	
 	console.log("creating tabs for evars, props, and events");
 	createOverviewOfSlot(report_suites, evars, "evars", workbook);
@@ -185,7 +162,7 @@ function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray
 	summarySheet.set(1, 6, "This spreadsheet has " + totalSheetsCreated + " sheets.");
 	
 	workbook.generate(function(err, JSZip){
-		if (err) return callback(err);
+		if (err) {return callback(err);}
 		
 		JSZip.generateAsync({type: "blob", mimeType: 'application/vnd.ms-excel;'}).then(function (blob) {
 			window.analytics.fileSize = blob.size;
@@ -202,5 +179,5 @@ module.exports = {
 	_fileSummaryStyling : fileSummaryStyling,
 	_createOverviewOfSlot : createOverviewOfSlot,
 	_generateSummaryForReportSuite : generateSummaryForReportSuite,
-	_mapToNameValuePairs : mapToNameValuePairs,
+	styles
 };

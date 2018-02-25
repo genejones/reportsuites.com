@@ -1,0 +1,29 @@
+<%= _.startCase(pkg.name) %> v<%= pkg.version %> (<%= moment().format('MMMM Do YYYY') %>)
+<%= pkg.description %>
+
+<%= pkg.homepage %>
+
+@author  <%= pkg.author.name %> (<%= pkg.author.url %>)
+@license <%= pkg.license %>
+@repository <%= pkg.repository.url %>
+┌──────────────────────────────┬─────────────────────┐
+│ File Name                    │ Type                │
+├──────────────────────────────┼─────────────────────┼
+│ Adobe-export.js              │ Application Logic   │
+│ essentials.js                │ Bundled Lib.s       │
+│ handlebars.templates.js      │ HTML Templates      │
+│ xmlbuilder.js                │ External Lib.       │
+│ msexcel-builder.js           │ External Lib.       │
+│ jszip.min.js                 │ External Lib.       │
+└──────────────────────────────┴─────────────────────┘
+Essentials.js contains a wide variety of supporting libraries.
+This file isn't expected to change often and is ideal for caching.
+Adobe-export.js contains the application logic for this project.
+
+This project uses a wide variety of other libraries and modules.
+I'm grateful for them. We truly stand upon the shoulders of giants.
+
+Libraries included directly have their licenses inline.
+These include JsZip, XMLbuilder, and msexcel-builder.
+Where libraries are bundled, their licenses have been placed at:
+https://reportsuites.com/assets/js/licenses.txt

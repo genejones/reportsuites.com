@@ -1,63 +1,157 @@
+"use strict";
 var currentTokenWSSE = '';
 var wsse = require('wsse');
+var request = require('browser-request');
 
-var constructRequestBodyRSID = function(report_suites){
-	//posting this over AJAX makes things picky for some reason.
-	//this function manually constructs the POST body to make Adobe happy
-	//because all my earlier attempts to use querystring or other methods failed.
-	window.rsid_list = {
-		"rsid_list":[
-		]
-	};
-	var stringList = '{"rsid_list":[';
-	for (var i=0;i<report_suites.length; i++){
-		stringList = stringList + '"' + report_suites[i] + '"';
-		if (i < report_suites.length -1){
-			stringList = stringList + ",";
-		}
-	}
-	
-	stringList = stringList + ']}';
-	return stringList;
-};
+let username = '';
+let password = '';
+function setCredentials (userInput, passInput){
+	username = userInput;
+	password = passInput;
+}
+function getCredentials (){
+	return {username, password};
+}
 
-var getNewAuthToken = function() {
-	var token = wsse({username:window.username, password:window.pass});
+function getNewAuthToken ()  {
+	var token = wsse(getCredentials());
 	currentTokenWSSE = token.getWSSEHeader({ nonceBase64: true });
-	console.debug(currentTokenWSSE);
-};
+	return currentTokenWSSE;
+}
 
-var getHeaders = function(){
-	getNewAuthToken();
+function getHeaders (){
+	let currentTokenWSSE = getNewAuthToken();
 	return {
       'Content-Type': 'application/x-www-form-urlencoded',
 	  'X-WSSE': currentTokenWSSE
     };
-};
+}
 
-var getListOfReportSuites = function(callback){
-	var options = {
-		headers: getHeaders(),
-		uri: 'https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites',
-		body: "search=&types=standard",
-		method: 'POST',
-		json: true
-	};
-	request(options, function (err, res, body) {
-		if (!err){
-			console.log(body);
-			report_suites = body.report_suites;
-			callback(false, report_suites);
-		}
-		else{
-			console.log(res.statusCode);
-			callback(err, null);
-		}
-	    
-  });
-};
+function constructRequestBodyRSID (report_suites) {
+    //posting this over AJAX makes things picky for some reason.
+    //this function manually constructs the POST body to make Adobe happy
+    //because all my earlier attempts to use querystring or other methods failed.
+    window.rsid_list = {
+        "rsid_list": []
+    };
+    var stringList = '{"rsid_list":[';
+    for (var i = 0; i < report_suites.length; i++) {
+        stringList = stringList + '"' + report_suites[i] + '"';
+        if (i < report_suites.length - 1) {
+            stringList = stringList + ",";
+        }
+    }
+    stringList = stringList + ']}';
+    return stringList;
+}
 
-var exports = module.exports = {};
-exports.getHeaders = getHeaders;
-exports.getNewAuthToken = getNewAuthToken;
-exports.getListOfReportSuites = getListOfReportSuites;
+function getListOfReportSuites (callback) {
+    var options = {
+        headers: getHeaders(),
+        uri: 'https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites',
+        body: "search=&types=standard",
+        method: 'POST',
+        json: true
+    };
+    request(options, function (err, res, body) {
+        if (!err) {
+            report_suites = body.report_suites;
+            callback(report_suites);
+        }
+        else {
+            console.log(res.statusCode);
+            displayError(err);
+        }
+    });
+}
+
+function getListOfEvars (form, callback) {
+    getNewAuthToken();
+    request({
+        headers: getHeaders(),
+        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvars',
+        body: form,
+        method: 'POST'
+    }, function (err, res, body) {
+        if (!err) {
+            var evarsRaw = body;
+            let evars = JSON.parse(evarsRaw);
+			callback(evars, form);
+        }
+        else {
+            console.log(res.statusCode);
+            displayError(err);
+            console.log(body);
+        }
+    });
+}
+
+function getListOfProps (form, callback) {
+    getNewAuthToken();
+    request({
+        headers: getHeaders(),
+        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetProps',
+        body: form,
+        method: 'POST'
+    }, function (err, res, body) {
+        if (!err) {
+            var propsRaw = body;
+            let props = JSON.parse(propsRaw);
+			callback(props, form);
+        }
+        else {
+            console.log(res.statusCode);
+            displayError(err);
+            console.log(body);
+        }
+    });
+}
+
+function getListOfEvents (form, callback) {
+    request({
+        headers: getHeaders(),
+        uri: 'https://api.omniture.com/admin/1.4/rest/?method=ReportSuite.GetEvents',
+        body: form,
+        method: 'POST'
+    }, function (err, res, body) {
+        if (!err) {
+            var eventsRaw = body;
+			let events = JSON.parse(eventsRaw);
+			callback(events, form);
+		}
+        else {
+            console.log(res.statusCode);
+            displayError(err);
+            console.log(body);
+        }
+    });
+}
+
+function mapToNameValuePairs(array, nameofVarSlot){
+	var rsid_mapping = {};
+	for (let i=0; i<array.length; i++){
+		var reportSuiteInfo = array[i];
+		var rsid = reportSuiteInfo.rsid;
+		var vars = reportSuiteInfo[nameofVarSlot];
+		var nvp = {};
+		for (var j=0; j<vars.length; j++){
+			var presentVariable = vars[j];
+			nvp[presentVariable.id] = presentVariable;
+		}
+		rsid_mapping[rsid] = nvp;
+	}
+
+	return rsid_mapping;
+}
+var exports = module.exports = {
+	constructRequestBodyRSID,
+	setCredentials,
+	getHeaders,
+	getNewAuthToken,
+	getListOfReportSuites,
+	getListOfEvents,
+	getListOfEvars,
+	getListOfProps,
+	_currentTokenWSSE : function(){return currentTokenWSSE;},
+	mapToNameValuePairs
+};

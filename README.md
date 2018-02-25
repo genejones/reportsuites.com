@@ -5,7 +5,7 @@
 
 This website uses NPM extensively. Jest, TravisCI, and Coveralls are used to provide test coverage data.
 
-There are no JS assets on index.html other than Google Tag Manager.
+There are no custom JS assets on index.html other than Google Tag Manager.
 Export.html uses a browserified bundle of client-handler, excel-handler, and excel-helpers. [msexcel-builder](https://github.com/protobi/msexcel-builder) is used to export to Excel.
 
 The [production site](https://reportsuites.com) may be several builds behind the most recent. The [staging site](https://chione.genejon.es) will be the most recent build or even ahead of it!

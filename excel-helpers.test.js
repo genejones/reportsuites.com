@@ -111,7 +111,7 @@ test("apply style to entire sheet", () => {
 	var arr = [ [1,2], [2,4]];
 	let updatedSheet = excel.populate_sheet_from_array_of_arrays(newSheet, arr);
 	excel.applyStylesToTheWholeSheet(updatedSheet, style);
-	expect(updatedSheet.styles).toEqual({ fill_1_1: 1, fill_1_2: 1, fill_2_1: 1, fill_2_2: 1 });
+	expect(updatedSheet.styles).toEqual({ fill_1_1: 2, fill_1_2: 2, fill_2_1: 2, fill_2_2: 2 });
 	let fills = updatedSheet.book.st.mfills;
 	//check if the fill color is correct
 	expect(fills[1]).toEqual({'type': 'solid', fgColor: 'DDDDDD', 'bgColor': '-'});
@@ -135,7 +135,7 @@ test("border construction - method overloading works", () => {
 	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border overloading");
 	excel.setBorder(ws, style, {row:1,column:1}, 2);
 	excel.setBorder(ws, style, [3,1], 1);
-	console.log(ws.styles);
+	//console.log(ws.styles);
 });
 
 test("border construction - length", () => {
@@ -143,9 +143,9 @@ test("border construction - length", () => {
 	let ws = excel.makeNewSheet(workbook, [["empty name test",'1','2'],['border','0','1']], "border length");
 	excel.setBorder(ws, style, {row:1,column:2}, {'long':3});
 	//expect(ws.sheet.style).toEqual({bder_1_3:2, bder_2_3:2, bder_3_3: 2});
-	console.log(ws.styles);
+	//console.log(ws.styles);
 	excel.setBorder(ws, style, {row:3,column:1}, {'tall':2});
-	console.log(ws.styles);
+	//console.log(ws.styles);
 });
 
 test("setRowHeights", () => {
@@ -167,7 +167,9 @@ test("setColumnWidths", () => {
 	let ws = excel.getSheets()["border overloading"];
 	let defaultWidth = 21;
 	excel.setColumnWidths(ws.dimensions, ws.sheet, defaultWidth);
-	console.log(ws.sheet);
+	expect(ws.sheet.col_wd[3]).toEqual({c:1, cw:21});
+	expect(ws.sheet.col_wd[4]).toEqual({c:2, cw:21});
+	expect(ws.sheet.col_wd[5]).toEqual({c:3, cw:21});
 });
 
 test("setColumnWidths with first column", () => {
@@ -175,6 +177,8 @@ test("setColumnWidths with first column", () => {
 	let defaultWidth = 22;
 	let firstWidth = 12;
 	excel.setColumnWidths(ws.dimensions, ws.sheet, defaultWidth, firstWidth);
-	console.log(ws.sheet);
+	expect(ws.sheet.col_wd[6]).toEqual({c:1, cw:12});
+	expect(ws.sheet.col_wd[7]).toEqual({c:2, cw:22});
+	expect(ws.sheet.col_wd[8]).toEqual({c:3, cw:22});
 });
 

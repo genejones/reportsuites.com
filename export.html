@@ -22,6 +22,7 @@
 	<meta property="og:image" content="https://reportsuites.com/assets/icons/mstile-150x150.png" />
 	<meta property="og:description" content="Tackling the details of your reportsuites." />
 	<meta property="og:site_name" content="Reportsuites.com" />
+	<link rel="author" href="humans.txt" />
 
 	<link rel="dns-prefetch" href="//code.jquery.com">
 	<link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
@@ -47,6 +48,10 @@
 	<script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
 	<script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 	<script defer src="assets/js/jszip.min.js"></script>
+	<script defer src="assets/js/lodash.min.js"></script>
+	<script defer src="assets/js/handlebars.runtime.min.js"></script>
+	<script defer src="assets/js/handlebar-templates.min.js"></script>
+	<script defer src="assets/js/essentials.js"></script>
 	<script defer src="assets/js/xmlbuilder.min.js"></script>
 	<script defer src="assets/js/msexcel-builder.min.js"></script>
     <script defer src="adobe-export.js"></script>
@@ -135,7 +140,7 @@
 </div> <!-- /container -->
 <div class="mt-3"></div>
 <footer class="footer">
-	<p class="ml-3"><strong>© Gene Jones</strong> 2017-2018. <small>CSS by Bootstrap 4, with patterning by <a href="http://www.heropatterns.com/" rel="noopener">Steve Schoger/Hero Patterns</a>. msexcel-builder used for Excel generation.</small></p>
+	<p class="ml-3"><strong>© Gene Jones</strong> 2017-2018. <small>CSS by Bootstrap 4, with patterning by <a href="http://www.heropatterns.com/" rel="noopener">Steve Schoger/Hero Patterns</a>. <a href="/assets/js/licenses.txt">View all modules used with licenses</a>.</small></p>
 </footer>
 
 
@@ -238,15 +243,15 @@
 	  </div>
 	  <div class="modal-body">
 		<!-- add smallest transparent gif to the images, along with the actual source. Lazy load the images later -->
-		<span id="cred-instructions-0" data-current-instruction="true" data-next-step="cred-instructions-1"><h5>Find your user profile on the top menu</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-1-0.jpg" /></span>
-		<span id="cred-instructions-1" data-prev-step="cred-instructions-0" data-next-step="cred-instructions-2" class="collapse"><h5>Click "Edit your profile"</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-1-1.jpg" /></span>
-		<span id="cred-instructions-2" data-prev-step="cred-instructions-1" class="collapse"><h5>Scroll to "Web Service". Your credentials are located here. Keep them secret and safe.</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/get-credentials-step-2.jpg" /></span>
+		<span id="cred-instructions-0" data-current-instruction="true" data-next-step="cred-instructions-1"><h5>Find your user profile on the top menu</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/imgs/get-credentials-step-1-0.jpg" /></span>
+		<span id="cred-instructions-1" data-prev-step="cred-instructions-0" data-next-step="cred-instructions-2" class="collapse"><h5>Click "Edit your profile"</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/imgs/get-credentials-step-1-1.jpg" /></span>
+		<span id="cred-instructions-2" data-prev-step="cred-instructions-1" class="collapse"><h5>Scroll to "Web Service". Your credentials are located here.</h5><img class="img-responsive img-thumbnail" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="/assets/imgs/get-credentials-step-2.jpg" /></span>
 	  </div>
 	  <div class="modal-footer">
-		<nav aria-label="...">
-		  <ul class="pager">
-			<li class="previous disabled"><a href="#"><span aria-hidden="true">&larr;</span> Previous Step</a></li>
-			<li class="next"><a href="#">Next Step <span aria-hidden="true">&rarr;</span></a></li>
+		<nav aria-label="Instructions navigation">
+		  <ul class="pagination justify-content-center">
+			<li class="page-item disabled previous"><a class="page-link" href="#"><span aria-hidden="true">&larr;</span> Previous Step</a></li>
+			<li class="page-item next"><a class="page-link" href="#">Next Step <span aria-hidden="true">&rarr;</span></a></li>
 		  </ul>
 		</nav>
 		<button style="display:none;" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
