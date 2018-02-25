@@ -14,9 +14,9 @@ grader.s_code = function(url){
 };
 
 grader.processData = function(){
-	let evars = mapToNameValuePairs(evarArray, 'evars');
-	let props = mapToNameValuePairs(propArray, 'props');
-	let events = mapToNameValuePairs(eventArray, 'events');
+	let evars = adobeAPI.mapToNameValuePairs(evarArray, 'evars');
+	let props = adobeAPI.mapToNameValuePairs(propArray, 'props');
+	let events = adobeAPI.mapToNameValuePairs(eventArray, 'events');
 }
 
 grader.getRSID = function(){
@@ -30,23 +30,6 @@ grader.getData = function(arr){
 		
 	}
 };
-
-function mapToNameValuePairs(array, nameofVarSlot){
-	var rsid_mapping = {};
-	for (var i=0; i<array.length; i++){
-		var reportSuiteInfo = array[i];
-		var rsid = reportSuiteInfo.rsid;
-		var vars = reportSuiteInfo[nameofVarSlot];
-		var nvp = {};
-		for (var j=0; j<vars.length; j++){
-			var presentVariable = vars[j];
-			nvp[presentVariable.id] = presentVariable;
-		}
-		rsid_mapping[rsid] = nvp;
-	}
-
-	return rsid_mapping;
-}
 
 grader.report_suite = function(username, pass){
   var reportsuites = getListOfReportSuites(function(err, reportsuites){

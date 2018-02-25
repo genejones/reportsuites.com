@@ -7,13 +7,17 @@
     "bootstrap": "^4.0.0-alpha.6",
     "browser-request": "^0.3.3",
     "browserify": "^14.4.0",
+    "browserify-shim": "^3.8.14",
     "file-saver": "^1.3.3",
     "handlebars": "^4.0.10",
     "jquery": "^3.2.1",
     "jszip": "^3.1.3",
     "lodash": "^4.17.4",
+    "page": "^1.8.3",
     "pbkdf2": "^3.0.14",
+    "sha.js": "^2.4.10",
     "wsse": "^2.4.0",
+    "wsse-in-browser": "^2.4.0",
     "xmlbundleer": "^9.0.4"
   },
   "devDependencies": {
@@ -30,7 +34,7 @@
     "coverage": "jest --coverage",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test": "jest",
-	"jshint": "jshint *",
+    "jshint": "jshint *",
     "build-all": "npm run bundle && npm run template && npm test",
     "template": "handlebars select_rsid.handlebars progress-display.handlebars -m --knownOnly -f assets/js/handlebar-templates.min.js",
     "watch": "watchify -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] -p browserify-banner client-handler.js -o adobe-export.js -v",
@@ -38,7 +42,8 @@
     "bundle": "npm run bundle-essentials && npm run bundle-main",
     "bundle-essentials-license": "brlicenses essentials-setup.js --format full -o assets/js/licenses.txt",
     "bundle-essentials-license-summary": "brlicenses essentials-setup.js --format table -o assets/js/licenses-summary.txt",
-    "bundle-essentials-bundle": "browserify -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] -p browserify-banner essentials-setup.js -o assets/js/essentials.js -v",
+    "bundle-essentials-bundle": "browserify -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] -p browserify-banner essentials-setup.js -o assets/js/essentials.js",
+	"bundle-essentials-bundle-with-paths": "browserify -g [uglifyify -x .js --mangle --compress [--unused --join_vars --properties --dead_code] ] -p --full-paths browserify-banner essentials-setup.js -o assets/js/essentials.js",
     "bundle-essentials": "npm run bundle-essentials-license && npm run bundle-essentials-license-summary && npm run bundle-essentials-bundle"
   },
   "keywords": [
@@ -64,8 +69,8 @@
     "setupFiles": [
       "<rootDir>/__mocks__/jquery.js",
       "<rootDir>/__mocks__/wsse-creds.js",
-      "<rootDir>/assets/js/essentials.js",
-      "<rootDir>/assets/js/handlebar-templates.min.js"
+      "<rootDir>/assets/js/handlebar-templates.min.js",
+	  "<rootDir>/assets/js/essentials.js"
     ],
     "collectCoverageFrom": [
       "*.js",
@@ -82,11 +87,11 @@
   },
   "browserify-shim": {
     "jQuery": "global:jQuery",
-    "wsse": "global:omnibus.request",
-    "request": "global:omnibus.wsse",
+    "wsse": "global:omnibus.wsse",
+    "request": "global:omnibus.request",
     "pbkdf2": "global:omnibus.pbkdf2",
     "file-saver": "global:omnibus.FileSaver",
-    "lodash/keys": "global:omnibus.lodash.keys",
-    "lodash/union": "global:omnibus.lodash.union"
+    "lodash/keys": "global:_.keys",
+    "lodash/union": "global:_.union"
   }
 }

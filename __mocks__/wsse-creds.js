@@ -5,3 +5,4 @@ window.pass = 'supersecretstuff';
 window.dataLayer = [];
 window.omnibus = window.omnibus || {};
 window.omnibus.frontend = {imagesLoaded: false};
+window.report_suites = {};

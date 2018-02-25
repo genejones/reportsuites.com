@@ -49,3 +49,9 @@ test("events API request", done => {
 	
 	adobe_api.getListOfEvents(expectedValues.selectedFormDataAll, callback);
 });
+
+test("name value pair creation", () => {
+	let props = adobe_api.mapToNameValuePairs(expectedValues.props, 'props');
+	expect(Object.keys(props)).toEqual(["illuminati2014global","illuminati2014en","illuminati2012de"]);
+	expect(Object.keys(props.illuminati2014global)).toEqual(["prop1", "prop2", "prop3"]);
+});

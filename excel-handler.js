@@ -142,31 +142,10 @@ var generateSummaryForReportSuite = function(report_suite, evars, props, events,
 	excelHelpers.populate_sheet_from_array_of_arrays(s, array);
 };
 
-function mapToNameValuePairs(array, nameofVarSlot){
-	var rsid_mapping = {};
-	for (let i=0; i<array.length; i++){
-		var reportSuiteInfo = array[i];
-		var rsid = reportSuiteInfo.rsid;
-		var vars = reportSuiteInfo[nameofVarSlot];
-		var nvp = {};
-		for (var j=0; j<vars.length; j++){
-			var presentVariable = vars[j];
-			nvp[presentVariable.id] = presentVariable;
-		}
-		rsid_mapping[rsid] = nvp;
-	}
-
-	return rsid_mapping;
-}
-
-function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evarArray, propArray, eventArray, fileName, callback) {
+function exportSiteCatToExcel(report_suites, allAvailableReportSuites, evars, props, events, fileName, callback) {
 	var workbook = excelbuilder.createWorkbook("./", fileName);
 	console.log("creating a summary/export sheet");
 	let summarySheet = createSummarySheet(workbook, report_suites, allAvailableReportSuites);
-	
-	let evars = mapToNameValuePairs(evarArray, 'evars');
-	let props = mapToNameValuePairs(propArray, 'props');
-	let events = mapToNameValuePairs(eventArray, 'events');
 	
 	console.log("creating tabs for evars, props, and events");
 	createOverviewOfSlot(report_suites, evars, "evars", workbook);
@@ -200,6 +179,5 @@ module.exports = {
 	_fileSummaryStyling : fileSummaryStyling,
 	_createOverviewOfSlot : createOverviewOfSlot,
 	_generateSummaryForReportSuite : generateSummaryForReportSuite,
-	_mapToNameValuePairs : mapToNameValuePairs,
 	styles
 };

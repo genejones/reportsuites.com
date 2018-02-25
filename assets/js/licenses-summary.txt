@@ -5,18 +5,14 @@
 │ browser-request │ 0.3.3   │ Unknown      │ Yes          │
 │ buffer          │ 5.0.6   │ MIT          │ Yes          │
 │ file-saver      │ 1.3.3   │ MIT          │ Yes          │
-│ handlebars      │ 4.0.10  │ MIT          │ Yes          │
 │ ieee754         │ 1.1.8   │ BSD-3-Clause │ Yes          │
 │ inherits        │ 2.0.3   │ ISC          │ Yes          │
-│ inherits        │ 2.0.3   │ ISC          │ Yes          │
-│ lodash          │ 4.17.4  │ MIT          │ Yes          │
 │ pbkdf2          │ 3.0.14  │ MIT          │ Yes          │
 │ process         │ 0.11.10 │ MIT          │ Yes          │
 │ safe-buffer     │ 5.1.1   │ MIT          │ Yes          │
-│ safe-buffer     │ 5.1.1   │ MIT          │ Yes          │
-│ sha.js          │ 2.4.8   │ MIT          │ Yes          │
 │ sha.js          │ 2.4.10  │ MIT          │ Yes          │
+│ wsse-in-browser │ 2.4.0   │ MIT          │ Yes          │
 └─────────────────┴─────────┴──────────────┴──────────────┘
 
-15 modules
+11 modules
 Licenses: 1 modules(s) without license

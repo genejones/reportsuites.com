@@ -1,5 +1,4 @@
 "use strict";
-exports.__esModule = true;
 
 var adobe_api = require('./adobe-api-helpers.js');
 var excel = require('./excel-handler.js');
@@ -24,9 +23,9 @@ console.log("Please also visit the Github for this page if you can think of anyw
 
 function processInitialOptions () {
     window.fileName = jQuery('input#filename').val() + '.xlsx';
-    window.username = jQuery('input#adobe-username').val();
-    window.pass = jQuery('input#adobe-secret').val();
-	adobe_api.setCredentials(window.username, window.pass);
+    let username = jQuery('input#adobe-username').val();
+    let pass = jQuery('input#adobe-secret').val();
+	adobe_api.setCredentials(username, pass);
     window.dataLayer.push({ 'event': 'export-complete',
         'company': analytics.company,
         'user': analytics.user,
@@ -136,15 +135,15 @@ function determineAnalyticsInformation (adobeVar) {
     //GA may use the Company/User unique hash as an user identifier in the future
 }
 
-function handleEvars(evars, formData){
-	window.adobe_vars.evars = evars;
+function handleEvars(rawEvars, formData){
+	window.adobe_vars.evars = adobe_api.mapToNameValuePairs(rawEvars, 'evars');
 	console.info("successfully got eVars");
 	displayProgress(25, "Fetching props");
 	adobe_api.getListOfProps(formData, handleProps);
 }
 
-function handleProps(props, formData){
-	window.adobe_vars.props = props;
+function handleProps(rawProps, formData){
+	window.adobe_vars.props = adobe_api.mapToNameValuePairs(rawProps, 'props');
 	console.info("successfully got props");
 	displayProgress(40, "Fetching events");
 	adobe_api.getListOfEvents(formData, handleEvents);
@@ -164,9 +163,9 @@ function handleExcelSuccess (input) {
     }
 }
 
-function handleEvents(events) {
+function handleEvents(rawEvents) {
 	console.log("successfully got events");
-	window.adobe_vars.events = events;
+	window.adobe_vars.events = adobe_api.mapToNameValuePairs(rawEvents, 'events');
 	displayProgress(65, "Creating hashes");
 	determineAnalyticsInformation(window.adobe_vars);
 	displayProgress(85, "Building spreadsheet");
@@ -180,3 +179,4 @@ exports.displayProgressBar = displayProgressBar;
 exports.displayProgress = displayProgress;
 exports.displayError = displayError;
 exports._getHash = getHash;
+exports.__esModule = true;

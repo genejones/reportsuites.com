@@ -127,6 +127,22 @@ function getListOfEvents (form, callback) {
     });
 }
 
+function mapToNameValuePairs(array, nameofVarSlot){
+	var rsid_mapping = {};
+	for (let i=0; i<array.length; i++){
+		var reportSuiteInfo = array[i];
+		var rsid = reportSuiteInfo.rsid;
+		var vars = reportSuiteInfo[nameofVarSlot];
+		var nvp = {};
+		for (var j=0; j<vars.length; j++){
+			var presentVariable = vars[j];
+			nvp[presentVariable.id] = presentVariable;
+		}
+		rsid_mapping[rsid] = nvp;
+	}
+
+	return rsid_mapping;
+}
 var exports = module.exports = {
 	constructRequestBodyRSID,
 	setCredentials,
@@ -137,4 +153,5 @@ var exports = module.exports = {
 	getListOfEvars,
 	getListOfProps,
 	_currentTokenWSSE : function(){return currentTokenWSSE;},
+	mapToNameValuePairs
 };
