@@ -18,7 +18,7 @@
     "sha.js": "^2.4.10",
     "wsse": "^2.4.0",
     "wsse-in-browser": "^2.4.0",
-    "xmlbundleer": "^9.0.4"
+    "xmlbundler": "^9.0.4"
   },
   "devDependencies": {
     "browserify-banner": "^1.0.6",
