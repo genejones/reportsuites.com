@@ -17,8 +17,7 @@
     "pbkdf2": "^3.0.14",
     "sha.js": "^2.4.10",
     "wsse": "^2.4.0",
-    "wsse-in-browser": "^2.4.0",
-    "xmlbundler": "^9.0.4"
+    "wsse-in-browser": "^2.4.0"
   },
   "devDependencies": {
     "browserify-banner": "^1.0.6",
@@ -80,7 +79,8 @@
       "!grader.js",
       "!essentials-setup.js",
       "!adobe-export.js"
-    ]
+    ],
+    "testURL":"http://www.reportsuites.com"
   },
   "browserify": {
     "entry": "client-handler.js"
